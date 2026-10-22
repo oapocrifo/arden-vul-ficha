@@ -8,6 +8,8 @@
 <script>try{var _t=localStorage.getItem('av-t');if(_t){document.documentElement.dataset.t=_t;document.querySelector('meta[name=color-scheme]').content=_t}}catch(e){}</script>
 <style>
 *{box-sizing:border-box;margin:0;font:inherit;color:inherit}
+*{scrollbar-width:none}
+@supports not (scrollbar-width:none){::-webkit-scrollbar{display:none}}
 b,strong{font-weight:600}i,em{font-style:italic}
 /* zoom de 130% só com largura suficiente: abaixo de 1000px a área efetiva cairia sob os breakpoints de 760px */
 :root{--z:1}
@@ -21,7 +23,7 @@ header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:6px 1
 .br{font-family:var(--sf);font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);white-space:nowrap}
 .br span{margin-left:10px;font-size:15px;font-weight:400;letter-spacing:.01em;text-transform:none;color:var(--tx)}
 nav{display:flex;gap:2px;flex:1;flex-wrap:wrap}
-@media(max-width:760px){nav{order:3;flex-basis:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -8px}nav button{white-space:nowrap}}
+@media(max-width:760px){nav{order:3;flex-basis:100%;flex-wrap:nowrap;overflow-x:auto;margin:0 -8px}nav button{white-space:nowrap}}
 .tr{display:flex;gap:6px;align-items:center;margin-left:auto}
 #st{color:var(--mt);font-size:12px}
 button{background:none;border:1px solid var(--ln);border-radius:7px;padding:5px 11px;color:var(--mt);cursor:pointer}
