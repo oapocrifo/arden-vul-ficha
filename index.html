@@ -17,22 +17,31 @@ a{color:var(--ac)}
 @media(prefers-color-scheme:dark){:root:not([data-t=light]){--bg:#11100e;--cd:#1a1916;--ln:#2f2b25;--tx:#ebe5d8;--mt:#978e7d;--fl:#ffffff0d;--ac:#c9a35e;--bd:#de7c63}}
 :root[data-t=dark]{color-scheme:dark;--bg:#11100e;--cd:#1a1916;--ln:#2f2b25;--tx:#ebe5d8;--mt:#978e7d;--fl:#ffffff0d;--ac:#c9a35e;--bd:#de7c63}
 :root[data-t=light]{color-scheme:light}
+/* movimento no estilo do interior.dev: entrada rápida que assenta (--e), saída curta que acelera (--x). --m zera deslocamentos com movimento reduzido */
+:root{--e:cubic-bezier(.23,1,.32,1);--x:cubic-bezier(.4,0,1,1);--m:1}
+@media(prefers-reduced-motion:reduce){:root{--m:0}}
 body{min-height:calc(100dvh/var(--z));background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;accent-color:var(--ac)}
-header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;padding:8px 16px;background:var(--cd);border-bottom:1px solid var(--ln)}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;padding:8px 16px;background:var(--cd);border-bottom:1px solid var(--ln);transition:translate .32s var(--e)}
+/* no celular o topo sobe ao rolar para baixo e deixa só o resumo (PV, CA…). Volta ao rolar para cima */
+@media(max-width:760px){header.hd{translate:0 var(--hy)}}
 .br{font-family:var(--sf);font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);white-space:nowrap}
 .br span{margin-left:10px;font-size:15px;font-weight:400;letter-spacing:.01em;text-transform:none;color:var(--tx)}
-nav{display:flex;gap:2px;flex:1}
+nav{position:relative;display:flex;gap:2px;flex:1}
+#ti{position:absolute;left:0;bottom:0;width:1px;height:2px;background:var(--ac);transform-origin:0 0;pointer-events:none}
 #sm{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:12px;color:var(--mt);font-variant-numeric:tabular-nums}
 #sm b{color:var(--tx);font-weight:600}
+#sm b,.big>[data-o]{display:inline-block}
 @media(max-width:760px){nav{order:3;flex-basis:100%;overflow-x:auto;margin:0 -8px;scrollbar-width:thin}nav button{white-space:nowrap}#sm{order:4;flex-basis:100%}}
 .tr{display:flex;gap:6px;align-items:center;margin-left:auto}
-#st{position:fixed;z-index:9;bottom:14px;left:50%;translate:-50% 0;max-width:90%;background:var(--tx);color:var(--bg);font-size:13px;padding:5px 14px;border-radius:20px;pointer-events:none}
+#st{position:fixed;z-index:9;bottom:14px;left:50%;translate:-50% 0;max-width:90%;background:var(--tx);color:var(--bg);font-size:13px;padding:5px 14px;border-radius:20px;pointer-events:none;transition:opacity .2s var(--e),translate .32s var(--e)}
 #st:empty{display:none}
-button{background:none;border:1px solid var(--ln);border-radius:7px;padding:5px 11px;color:var(--mt);cursor:pointer}
+@starting-style{#st{opacity:0;translate:-50% calc(8px*var(--m))}}
+button{background:none;border:1px solid var(--ln);border-radius:7px;padding:5px 11px;color:var(--mt);cursor:pointer;transition:color .15s,border-color .15s,background-color .15s}
 button:hover{color:var(--tx);border-color:var(--mt)}
 button[disabled]{opacity:.4;cursor:default}
 nav button,#th button{border:0;border-bottom:2px solid transparent;border-radius:0;padding:6px 10px}
-nav button[aria-current],#th button[aria-pressed=true]{color:var(--tx);border-color:var(--ac)}
+nav button[aria-current]{color:var(--tx)}
+#th button[aria-pressed=true]{color:var(--tx);border-color:var(--ac)}
 .pri{background:var(--ac);border-color:var(--ac);color:var(--cd)}
 .pri:hover{color:var(--cd);border-color:var(--ac);filter:brightness(1.1)}
 .sm{font-size:12px;padding:2px 8px}
@@ -46,6 +55,25 @@ main{max-width:1180px;margin:0 auto;padding:18px 16px 64px}
 h1{font-family:var(--sf);font-size:30px;font-weight:600;letter-spacing:.01em}
 h2{display:flex;align-items:baseline;gap:8px;font-family:var(--sf);font-size:17px;font-weight:600;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--ln)}
 h2 small,h3 small{margin-left:auto;font-family:system-ui,sans-serif;font-size:12px;font-weight:400;color:var(--mt)}
+/* seções dobráveis: o título (.fh) abre e fecha os detalhes (.x) da seção [data-f] */
+.fh{display:flex;align-items:baseline;gap:8px;flex:1;padding:0;border:0;border-radius:0;color:inherit;text-align:left}
+.fh:hover{color:inherit}
+.ch2 .fh{flex:none}
+/* seção que só tem detalhes: fechada, o título perde a linha de baixo */
+h2{transition:margin-bottom .26s var(--e),padding-bottom .26s var(--e),border-color .2s}
+[data-f]:not(.op)>h2:has(+.x:last-child){margin-bottom:0;padding-bottom:0;border-color:transparent}
+.fh::after,summary::after{content:"";flex:none;align-self:center;width:.38em;height:.38em;margin:0 .2em;border:solid var(--mt);border-width:0 1.5px 1.5px 0;rotate:-45deg;transition:rotate .3s var(--e)}
+.op .fh::after,details[open]>summary::after{rotate:45deg}
+summary{display:flex;align-items:baseline;gap:8px;list-style:none}
+summary::-webkit-details-marker{display:none}
+/* altura animada pelo truque de grade 0fr → 1fr, que funciona em todos os navegadores atuais */
+.x{display:grid;grid-template-rows:1fr;transition:grid-template-rows .34s var(--e),opacity .2s var(--e) .04s}
+.x>*{min-height:0;overflow:clip;overflow-clip-margin:4px}
+[data-f]:not(.op) .x{grid-template-rows:0fr;opacity:0;visibility:hidden;transition:grid-template-rows .26s var(--e),opacity .14s var(--x),visibility 0s .26s}
+details::details-content{display:grid;grid-template-rows:0fr;overflow:clip;overflow-clip-margin:4px;transition-property:grid-template-rows,content-visibility;transition-duration:.3s;transition-timing-function:var(--e);transition-behavior:allow-discrete}
+details[open]::details-content{grid-template-rows:1fr}
+details>:not(summary){min-height:0}
+@media(prefers-reduced-motion:reduce){.x,[data-f]:not(.op) .x,details::details-content,header{transition:none!important}}
 h3{display:flex;align-items:baseline;gap:8px;font-family:var(--sf);font-size:15px;font-weight:600;margin:12px 0 4px}
 p+p{margin-top:6px}
 .mut{color:var(--mt)}
@@ -168,7 +196,14 @@ body.hm .ns{display:none!important}
 /* diálogos */
 dialog{margin:auto;background:var(--cd);color:var(--tx);border:1px solid var(--ln);border-radius:12px;width:min(640px,94vw);max-height:calc(90dvh/var(--z));overflow:auto;padding:14px 16px;display:none}
 dialog[open]{display:block}
-dialog::backdrop{background:#000a}
+/* diálogos: entram com leve subida e escala (@starting-style), saem mais rápido */
+dialog{opacity:0;translate:0 calc(6px*var(--m));scale:calc(1 - .02*var(--m));transition:opacity .15s var(--x),translate .15s var(--x),scale .15s var(--x)}
+dialog[open]{opacity:1;translate:0;scale:1;transition-duration:.2s,.34s,.34s;transition-timing-function:var(--e)}
+dialog::backdrop{background:#0000;transition:background-color .15s var(--x)}
+dialog[open]::backdrop{background:#000a;transition-duration:.2s;transition-timing-function:var(--e)}
+@starting-style{dialog[open]{opacity:0;translate:0 calc(12px*var(--m));scale:calc(1 - .04*var(--m))}dialog[open]::backdrop{background:#0000}}
+/* shortcut: a saída animada só existe onde há overlay (Chrome, Edge). No Safari e no Firefox o diálogo some na hora, sem pular de lugar. Animar lá exigiria interceptar cada forma de fechar */
+@supports(overlay:auto){dialog{transition-property:opacity,translate,scale,display,overlay;transition-behavior:allow-discrete}dialog::backdrop{transition-property:background-color,display,overlay;transition-behavior:allow-discrete}}
 .dh{display:flex;align-items:center;gap:8px;position:sticky;top:-14px;z-index:2;background:var(--cd);padding:8px 0;margin:-8px 0 6px}
 .dh b{flex:1;font-family:var(--sf);font-size:18px;font-weight:600}
 fieldset{border:0;border-top:1px solid var(--ln);padding:10px 0 4px;margin-top:8px;min-width:0}
@@ -188,7 +223,9 @@ legend{font-family:var(--sf);font-weight:600;padding-right:8px}
 .ck{display:flex;gap:8px;align-items:center}
 #ief:not(:has([name=ct]:checked)) .xc{display:none}
 #op{position:fixed;inset:52px 12px auto auto;margin:0;width:auto;min-width:220px;gap:4px}
-#op[open]{display:grid}
+#op{transform-origin:top right;translate:0 calc(-6px*var(--m))}
+#op[open]{display:grid;translate:0}
+@starting-style{#op[open]{translate:0 calc(-6px*var(--m));scale:calc(1 - .05*var(--m))}}
 #op::backdrop{background:none}
 #op hr{border:0;border-top:1px solid var(--ln);margin:3px 0}
 #ak{width:min(420px,94vw)}#akb{display:contents}
@@ -197,7 +234,7 @@ legend{font-family:var(--sf);font-weight:600;padding-right:8px}
 #hp li,#hp p{font-size:14px;color:var(--mt)}
 #hp ul{padding-left:1.2em}
 [hidden]{display:none!important}
-@media print{header,.ad,.ac,.nb,button{display:none!important}body{background:#fff}.cd{break-inside:avoid}.pg+.pg{break-before:page}textarea{max-block-size:none}}
+@media print{header,.ad,.ac,.nb,button{display:none!important}button.fh{display:flex!important}.fh::after{display:none}.x{grid-template-rows:1fr!important;opacity:1!important;visibility:visible!important}body{background:#fff}.cd{break-inside:avoid}.pg+.pg{break-before:page}textarea{max-block-size:none}}
 </style>
 </head>
 <body class=hm>
@@ -206,12 +243,12 @@ legend{font-family:var(--sf);font-weight:600;padding-right:8px}
 <nav id=tb aria-label=Abas></nav>
 <div id=sm class=ns><span>PV <b data-o=pvt></b></span><span>CA <b data-o=ca></b></span><span>Desgaste <b data-o=dgt></b></span><span>Carga <b data-o=we></b></span></div>
 <div class=tr>
-<span id=st role=status></span>
 <button data-a=un class="ns hb" title="Desfazer (Ctrl+Z)" aria-label=Desfazer>&#8630;</button>
 <button data-a=op>Opções</button>
 <button data-a=hp class=hb title=Ajuda aria-label=Ajuda>?</button>
 </div>
 </header>
+<span id=st role=status></span>
 <main id=m></main>
 <input type=file id=fi accept=".json,application/json" hidden>
 <datalist id=cat></datalist>
@@ -291,6 +328,9 @@ const rnd=n=>Math.round(n*100)/100;
 const fmt=n=>rnd(n).toLocaleString('pt-BR');
 const sg=n=>(n<0?'−':'+')+Math.abs(n);
 const LS='av-fichas',AK='av-a',FSZ=CSS.supports('field-sizing','content');
+const E='cubic-bezier(.23,1,.32,1)',RM=matchMedia('(prefers-reduced-motion: reduce)');
+/** Número de um texto exibido ("−1", "1.234", "3/5"), para saber se o valor subiu ou desceu. */
+const nv=s=>parseFloat(String(s).replace(/\./g,'').replace(',','.').replace('−','-'))||0;
 
 // ===== Regras (Notion: Os Salões de Arden Vul | Página dos Jogadores) =====
 const AT=[['fo','FOR','Força'],['de','DES','Destreza'],['co','CON','Constituição'],['in','INT','Inteligência'],['sa','SAB','Sabedoria'],['ca','CAR','Carisma']];
@@ -422,8 +462,9 @@ const CATR=[
 const CAT=new Map(CATR.map(([n,t,p,w,d,x])=>[n,{n,t,p,w,d,x:x||{}}]));
 
 // ===== Estado =====
-let S=null,tab='p',ne=-1,dirty=false,sid,tid,auto=true,eid=null,H=[],prev='',ht=0,lv0=1;
+let S=null,tab='p',ne=-1,dirty=false,sid,tid,auto=true,eid=null,H=[],prev='',ht=0,lv0=1,F={},rt=null,ip=null,sy=0;
 try{auto=localStorage.getItem(AK)!='0'}catch(e){}
+try{F=JSON.parse(localStorage.getItem('av-f'))||{}}catch(e){}
 const lsRead=()=>{try{return JSON.parse(localStorage.getItem(LS))||{}}catch(e){return {}}};
 const C=()=>CL[S.cl];
 const kids=p=>S.it.filter(x=>x.c==p);
@@ -526,6 +567,11 @@ function md(t){const o=[];let lt='',m;
 const O=k=>`<span data-o="${k}"></span>`;
 const opts=(a,v)=>a.map(([k,n])=>`<option value="${esc(k)}"${k==v?' selected':''}>${esc(n)}</option>`).join('');
 const inp=(k,v,a='')=>`<input data-k="${k}" value="${esc(v)}" ${a}>`;
+/** Seção dobrável. k guarda neste navegador se está aberta, d é o padrão (1 = aberta). */
+const fs=(k,d=0,c='')=>`data-f="${k}" class="cd ${c}${(F[k]??d)?' op':''}"`;
+const fh=(k,t,d=0)=>`<button class=fh data-a=fd data-v="${k}" aria-expanded=${!!(F[k]??d)}>${t}</button>`;
+/** Detalhe que só aparece com a seção aberta. */
+const X=h=>`<div class=x><div>${h}</div></div>`;
 function home(){const L=Object.values(lsRead()).map(fix).filter(Boolean).sort((a,b)=>b.ts-a.ts);
  return `<section class=home><p class=lb>The Halls of Arden Vul</p><h1>Os Salões de Arden Vul</h1><p class=mut>Ficha de personagem. Escolha uma ficha salva neste navegador, carregue um arquivo .json ou crie um personagem novo.</p>
  <div class=ac2><button class=pri data-a=nw>Criar nova ficha</button><button data-a=ld>Carregar arquivo (.json)</button></div>
@@ -543,30 +589,30 @@ function pers(D){const c=C(),W=kids('corpo').filter(x=>ARMAS.includes(x.n));
 </div>
 <div class="g gp">
 <div class=col>
-<section class=cd><h2>Atributos</h2>${AT.map(([k,a,n])=>`<div class=at><b title="${n}">${a}</b><input type=number min=3 max=18 inputmode=numeric data-k="at.${k}" value="${esc(S.at[k])}" aria-label="${n}"><span class=md>${O('m_'+k)}</span><small>${O('e_'+k)}</small></div>`).join('')}</section>
-<section class=cd><h2>Idiomas e social</h2><dl class=kv><dt>Idiomas permitidos</dt><dd>${O('lg')}</dd><dt>Alfabetização</dt><dd>${O('lit')}</dd><dt>Reação (CAR)</dt><dd>${O('rea')}</dd><dt>Máximo de capangas</dt><dd>${O('cap')}</dd><dt>Lealdade dos contratados</dt><dd>${O('loy')}</dd></dl>
+<section ${fs('at')}><h2>${fh('at','Atributos')}</h2>${AT.map(([k,a,n])=>`<div class=at><b title="${n}">${a}</b><input type=number min=3 max=18 inputmode=numeric data-k="at.${k}" value="${esc(S.at[k])}" aria-label="${n}"><span class=md>${O('m_'+k)}</span>${X(`<small>${O('e_'+k)}</small>`)}</div>`).join('')}</section>
+<section ${fs('so')}><h2>${fh('so','Idiomas e social')}</h2>${X(`<dl class=kv><dt>Idiomas permitidos</dt><dd>${O('lg')}</dd><dt>Alfabetização</dt><dd>${O('lit')}</dd><dt>Reação (CAR)</dt><dd>${O('rea')}</dd><dt>Máximo de capangas</dt><dd>${O('cap')}</dd><dt>Lealdade dos contratados</dt><dd>${O('loy')}</dd></dl>
 <label class="f mt"><span class=lb>Línguas</span><textarea class=t2 data-k=li placeholder="ex.: Arconteano, Língua dos Ladrões">${esc(S.li)}</textarea></label>
-<label class="f mt"><span class=lb>Sistemas de escrita</span><textarea class=t2 data-k=se placeholder="ex.: Mithric (Arconteano)">${esc(S.se)}</textarea></label></section>
+<label class="f mt"><span class=lb>Sistemas de escrita</span><textarea class=t2 data-k=se placeholder="ex.: Mithric (Arconteano)">${esc(S.se)}</textarea></label>`)}</section>
 </div>
 <div class=col>
-<section class=cd><h2>Combate</h2>
+<section ${fs('cb')}><h2>${fh('cb','Combate')}</h2>
 <div class=pv><span class=lb>PV</span><input type=number data-k=pv value="${esc(S.pv)}" aria-label="PV atuais"><span class="big mut">/ ${O('pvm')}</span></div><div class=bar data-p=pvp data-w=pvl></div>
 <div class="st mt"><div class=sb><span class=lb>CA</span><span class=big>${O('ca')}</span></div><div class=sb><span class=lb>Acerto</span><span class=big>${O('ac')}</span></div>
-<div class=sb><span class=lb>Corpo a corpo</span><span class=big>${O('cac')}</span><small>acerto + FOR</small></div><div class=sb><span class=lb>À distância</span><span class=big>${O('dis')}</span><small>acerto + DES</small></div>
+<div class=sb><span class=lb>Corpo a corpo</span><span class=big>${O('cac')}</span>${X('<small>acerto + FOR</small>')}</div><div class=sb><span class=lb>À distância</span><span class=big>${O('dis')}</span>${X('<small>acerto + DES</small>')}</div>
 ${c.dp?`<div class=sb><span class=lb>Dano padrão</span><span class=big>${O('dp')}</span></div>`:''}${c.edf?`<div class=sb><span class=lb>Espaços</span><span class=big>${O('edu')}/${O('edf')}</span><small>de feitiço</small></div>`:''}${c.la?`<div class=sb><span class=lb>Ladinagem</span><span class=big>${O('la')}</span></div>`:''}</div>
 ${W.length?`<h3>Armas no corpo</h3>${W.map(x=>`<div class=wp><span>${esc(x.n)}</span><small data-o="wa_${x.i}"></small></div>`).join('')}`:''}
-<p class=note>CA: ${O('cad')}. Armadura e escudo contam quando estão no Corpo, no inventário.</p>
-<label class="f mt" style="max-width:12rem"><span class=lb>Ajuste de CA (itens mágicos etc.)</span>${inp('cab',S.cab||'','type=number')}</label>
+${X(`<p class=note>CA: ${O('cad')}. Armadura e escudo contam quando estão no Corpo, no inventário.</p>
+<label class="f mt" style="max-width:12rem"><span class=lb>Ajuste de CA (itens mágicos etc.)</span>${inp('cab',S.cab||'','type=number')}</label>`)}
 <p class=warn data-o=npf></p></section>
-<section class=cd><h2>Salvaguardas <small>1d20 ≥ valor</small></h2>${SV.map(([a,n,d],k)=>`<div class=sv><i>${a}</i><div>${n}<small>${d}</small></div><span class=big>${O('sv'+k)}</span></div>`).join('')}
-<p class=warn data-o=svd></p><p class=note>Contra efeitos de origem mágica, some o modificador de SAB: ${O('svm')}.</p></section>
+<section ${fs('sv')}><h2>${fh('sv','Salvaguardas')}<small>1d20 ≥ valor</small></h2>${SV.map(([a,n,d],k)=>`<div class=sv><i>${a}</i><div>${n}${X(`<small>${d}</small>`)}</div><span class=big>${O('sv'+k)}</span></div>`).join('')}
+<p class=warn data-o=svd></p>${X(`<p class=note>Contra efeitos de origem mágica, some o modificador de SAB: ${O('svm')}.</p>`)}</section>
 </div>
 <div class=col>
-<section class=cd><h2>Carga e movimento</h2>
+<section ${fs('cg')}><h2>${fh('cg','Carga e movimento')}</h2>
 <div class=wl><span class=big>${O('we')}</span><div><span class=lb>Classe de peso</span>${O('pt')} c carregados<br><span class=mut>${O('wn')}</span></div></div>
-<div class="bar mt" data-p=wp></div><div class=ch>${c.pc.map((v,k)=>`<span class="${D.wk==k?'on':''}">${'ABCD'[k]} ≤ ${v}</span>`).join('')}</div>
+<div class="bar mt" data-p=wp></div>${X(`<div class=ch>${c.pc.map((v,k)=>`<span class="${D.wk==k?'on':''}">${'ABCD'[k]} ≤ ${v}</span>`).join('')}</div>`)}
 <div class=mv><div class=sb><span class=lb>Rodada</span>${O('mr')}</div><div class=sb><span class=lb>Turno</span>${O('mt')}</div><div class=sb><span class=lb>Hex</span>${O('mh')}</div><div class=sb><span class=lb>Encontro</span>${O('me')}</div></div>
-<p class=note>Correr: 3× o movimento da Rodada por até 1 Turno.</p></section>
+${X('<p class=note>Correr: 3× o movimento da Rodada por até 1 Turno.</p>')}</section>
 <section class=cd><h2>Desgaste <small>total ${O('dgt')}</small></h2>
 <div class=dg>${['Estresse','Exaustão','Privação'].map((n,k)=>`<label class=f><span class=lb>${n}</span>${inp('dg.'+k,S.dg[k],'type=number min=0 inputmode=numeric')}</label>`).join('')}</div>
 <p class=note>${O('dge')}</p>${S.cl=='andarilho'?'<p class=note>Acostumado com Viagens: pode começar a excursão com −4 no Desgaste.</p>':''}</section>
@@ -585,43 +631,43 @@ ${isC(x)?'<span class="num mut">1</span>':`<input type=number min=0 step=1 input
 <div class=ac><button class=ic data-a=ie data-v="${x.i}" title="Editar" aria-label="Editar ${esc(x.n)}">&#9998;</button><button class=ic data-a=id data-v="${x.i}" title="Excluir" aria-label="Excluir ${esc(x.n)}">&#10005;</button></div></div>`;
  const hd='<div class="ir hd"><span>Item</span><span class=num>Qtd</span><span class=num>Peso un.</span><span class=num>Total</span><span>Local</span><span></span></div>';
  const rows=p=>{const k=kids(p).sort((a,b)=>isC(b)-isC(a));return k.length?hd+k.map(row).join(''):'<p class=em>Vazio.</p>'};
- const card=({x,path})=>`<section class=cd data-ov="${x.i}"><div class=ch2><b>${esc(x.n)}</b><span class=mut>em ${esc(path.join(' › '))}</span>${x.r?`<span class=tg>−${x.r}% peso</span>`:''}${x.z?'<span class=tg>peso próprio ignorado no corpo</span>':''}
-<span class=cap>${O('ld_'+x.i)}${x.cap?' / '+fmt(x.cap):''} c${x.cap?'':' · sem limite'}</span></div>${x.cap?`<div class=bar data-p="lp_${x.i}" data-w="lw_${x.i}"></div><p class=warn data-o="lw_${x.i}"></p>`:''}${rows(x.i)}</section>`;
+ const card=({x,path})=>`<section ${fs('c'+x.i,1)} data-ov="${x.i}"><div class=ch2>${fh('c'+x.i,`<b>${esc(x.n)}</b>`,1)}<span class=mut>em ${esc(path.join(' › '))}</span>${x.r?`<span class=tg>−${x.r}% peso</span>`:''}${x.z?'<span class=tg>peso próprio ignorado no corpo</span>':''}
+<span class=cap>${O('ld_'+x.i)}${x.cap?' / '+fmt(x.cap):''} c${x.cap?'':' · sem limite'}</span></div>${x.cap?`<div class=bar data-p="lp_${x.i}" data-w="lw_${x.i}"></div><p class=warn data-o="lw_${x.i}"></p>`:''}${X(rows(x.i))}</section>`;
  const fx=kids('fora').filter(x=>!isC(x));
- return `<section class=cd><h2>Carga <small>${C().n}: ${C().pc.map((v,k)=>'ABCD'[k]+' ≤ '+v).join(' · ')}</small></h2>
+ return `<section ${fs('ic')}><h2>${fh('ic','Carga')}<small>${C().n}: ${C().pc.map((v,k)=>'ABCD'[k]+' ≤ '+v).join(' · ')}</small></h2>
 <div class=wl><span class=big>${O('we')}</span><div><b>${O('pt')} c</b> com o personagem<br><span class=mut>${O('wn')}</span></div></div><div class="bar mt" data-p=wp></div>
-<div class=mv><div class=sb><span class=lb>Rodada</span>${O('mr')}</div><div class=sb><span class=lb>Turno</span>${O('mt')}</div><div class=sb><span class=lb>Hex</span>${O('mh')}</div><div class=sb><span class=lb>Encontro</span>${O('me')}</div></div></section>
-<section class="cd mt"><h2>Moedas <small>1 ciclo = 1 c de peso</small></h2><div class=tw><table class=mo><tr><th></th>${Object.keys(MO).map(k=>`<th>${k}</th>`).join('')}<th>Valor</th></tr>
+${X(`<div class=mv><div class=sb><span class=lb>Rodada</span>${O('mr')}</div><div class=sb><span class=lb>Turno</span>${O('mt')}</div><div class=sb><span class=lb>Hex</span>${O('mh')}</div><div class=sb><span class=lb>Encontro</span>${O('me')}</div></div>`)}</section>
+<section ${fs('mo',0,'mt')}><h2>${fh('mo','Moedas')}<small>1 ciclo = 1 c de peso</small></h2><div class=tw><table class=mo><tr><th></th>${Object.keys(MO).map(k=>`<th>${k}</th>`).join('')}<th>Valor</th></tr>
 <tr><td>Carregadas</td>${Object.keys(MO).map(k=>`<td>${O('mc_'+k)}</td>`).join('')}<td>${O('mvc')}</td></tr><tr><td>Guardadas fora</td>${Object.keys(MO).map(k=>`<td>${O('ms_'+k)}</td>`).join('')}<td>${O('mvs')}</td></tr></table></div>
-<p class=note>Moedas são itens do inventário: adicione “Ciclo de prata” e similares no contêiner onde estão.</p></section>
-<section class="cd mt"><h2>Adicionar item</h2><form class=ad id=adf>
+${X('<p class=note>Moedas são itens do inventário: adicione “Ciclo de prata” e similares no contêiner onde estão.</p>')}</section>
+<section ${fs('ad',0,'mt')}><h2>${fh('ad','Adicionar item')}</h2>${X(`<form class=ad id=adf>
 <label class=f><span class=lb>Item</span><input name=n list=cat required autocomplete=off placeholder="Digite ou escolha do comércio"></label>
 <label class=f><span class=lb>Qtd</span><input name=q type=number min=1 step=1 value=1 inputmode=numeric class=num></label>
 <label class=f><span class=lb>Peso un.</span><input name=w type=number min=0 step=any inputmode=decimal class=num></label>
 <label class="f lc"><span class=lb>Para</span><select name=c>${opts([...L,['fora','Fora, como local próprio']],'corpo')}</select></label>
-<button class=pri>Adicionar</button><button type=button data-a=ip title="Colar o código de um item copiado de outra ficha">Colar código</button></form></section>
+<button class=pri>Adicionar</button><button type=button data-a=ip title="Colar o código de um item copiado de outra ficha">Colar código</button></form>`)}</section>
 <h2 class=mt style="margin-top:22px">Com o personagem</h2>
-<div class=ct><section class=cd><div class=ch2><b>Corpo</b><span class=mut>vestido, empunhado ou preso ao corpo</span><span class=cap>sem limite</span></div>${rows('corpo')}</section>${tree('corpo').map(card).join('')}</div>
+<div class=ct><section ${fs('corpo',1)}><div class=ch2>${fh('corpo','<b>Corpo</b>',1)}<span class=mut>vestido, empunhado ou preso ao corpo</span><span class=cap>sem limite</span></div>${X(rows('corpo'))}</section>${tree('corpo').map(card).join('')}</div>
 <h2 style="margin-top:22px">Guardado fora do personagem</h2><div class=nb><button class=sm data-a=nl>+ Local de armazenamento</button></div>
 <div class=ct>${tree('fora').map(card).join('')||'<p class=em>Nenhum local. Crie um baú no ponto seguro, um quarto alugado ou uma conta no banco e mova itens para lá. Nada guardado fora conta no peso.</p>'}
-${fx.length?`<section class=cd><div class=ch2><b>Fora, sem local</b></div>${rows('fora')}</section>`:''}</div>`}
+${fx.length?`<section ${fs('fx',1)}><div class=ch2>${fh('fx','<b>Fora, sem local</b>',1)}</div>${X(rows('fora'))}</section>`:''}</div>`}
 
 function mag(D){const c=C(),lst=SP[c.mg],dv=S.cl=='devoto';
  const fr=D.edf-D.edu,av=lst.slice(0,D.msl).map((g,j)=>`<optgroup label="${j+1}º nível${j+1>fr?' · sem espaço livre':''}"${j+1>fr?' disabled':''}>${g.filter(n=>!S.fe.some(f=>f.n==n)).map(n=>`<option value="${j+1}|${esc(n)}">${esc(n)}</option>`).join('')}</optgroup>`).join('');
  const dm=DOM[S.dm];
- return `<div class=g><div class=col><section class=cd><h2>Espaços de feitiço <small>nível máximo de feitiço: ${D.msl}º</small></h2>
+ return `<div class=g><div class=col><section ${fs('ef')}><h2>${fh('ef','Espaços de feitiço')}<small>nível máximo de feitiço: ${D.msl}º</small></h2>
 <div class=wl><span class=big>${O('edu')}</span><div>de <b>${O('edf')}</b> espaços ocupados<br><span class=mut>Cada feitiço ocupa espaços iguais ao seu nível.</span></div></div><div class="bar mt" data-p=edp data-w=edw></div><p class=warn data-o=edw></p>
 <h3>Decorados</h3>${S.fe.length?`<ul class=fl>${S.fe.map((f,k)=>`<li class=fe><span>${spl(c.mg,f.n)}</span><span class=mut>${f.l}º</span><button class=sm data-a=fc data-v=${k} title="Conjurar consome o feitiço da mente">Conjurar</button><button class=ic data-a=fx data-v=${k} aria-label="Esquecer ${esc(f.n)}">&#10005;</button></li>`).join('')}</ul>`:'<p class=em>Nenhum feitiço decorado.</p>'}
 <form id=fef class="ad mt" style="grid-template-columns:1fr auto"><label class=f><span class=lb>Decorar</span><select name=s required>${av}</select></label><button class=pri>Decorar</button></form>
-<p class=note>${dv?'Ritual de 1 hora por nível do feitiço mais alto pedido. Interromper causa Estresse igual a esse nível.':'1 hora de estudo por nível de cada feitiço, com a fonte completa. Interromper causa Estresse igual ao nível do feitiço.'} Conjurar leva 10 segundos por nível.</p></section>
+${X(`<p class=note>${dv?'Ritual de 1 hora por nível do feitiço mais alto pedido. Interromper causa Estresse igual a esse nível.':'1 hora de estudo por nível de cada feitiço, com a fonte completa. Interromper causa Estresse igual ao nível do feitiço.'} Conjurar leva 10 segundos por nível.</p>`)}</section>
 ${dv?'':`<section class=cd><h2>Foco de estudo</h2><select data-k=fo>${opts([['','—'],['Alteração','Alteração'],['Criação','Criação'],['Percepção','Percepção']],S.fo)}</select><p class=note>Metade do tempo gasto em feitiços desse domínio.</p></section>`}</div>
 <div class=col>${dv?`<section class=cd><h2>Divindade</h2><div class=fg><label class=f><span class=lb>Nome</span>${inp('dv',S.dv)}</label>
 <label class=f><span class=lb>Tipo</span><select data-k=dt data-re>${opts([['maior','Maior'],['menor','Menor (até 3º nível)']],S.dt)}</select></label>
 <label class=f><span class=lb>Domínio</span><select data-k=dm data-re>${opts(Object.entries(DOM).map(([k,v])=>[k,v[0]]),S.dm)}</select></label></div></section>
-<section class=cd><h2>Feitiço Representante · ${dm[1]}</h2><p>${dm[2]}</p>${dm[3].map(t=>`<p class=note>${t}</p>`).join('')}
+<section ${fs('rp')}><h2>${fh('rp','Feitiço Representante · '+dm[1])}</h2>${X(`<p>${dm[2]}</p>${dm[3].map(t=>`<p class=note>${t}</p>`).join('')}`)}
 <h3>Usos por ritual <small>afeta até ${O('rpa')} criaturas</small></h3><div class=uses>${D.rpu?Array.from({length:D.rpu},(_,k)=>`<input type=checkbox data-a=ru data-v=${k}${k<S.ru?' checked':''} aria-label="Uso ${k+1}">`).join('')+'<button class=sm data-a=rr>Novo ritual</button>':'<span class=em>Nenhum no nível 1. Ganha 1 uso no nível 2.</span>'}</div>
 <h3>Rolagem em 2d6 contra o maior PV do grupo alvo</h3><div class=tw><table class=tbl><tr><th>PV do alvo</th>${[1,2,3,4,5,6,7,8,'9+'].map(v=>`<th>${v}</th>`).join('')}</tr><tr class=on><td>Nível ${D.lv}</td>${repRow(D.lv).map(v=>`<td>${v}</td>`).join('')}</tr></table></div>
-<p class=note>Número: mínimo em 2d6 · A: sucesso automático · S: sucesso maior · —: impossível. Exige a pronúncia e o símbolo sagrado.</p></section>`:''}
+${X('<p class=note>Número: mínimo em 2d6 · A: sucesso automático · S: sucesso maior · —: impossível. Exige a pronúncia e o símbolo sagrado.</p>')}</section>`:''}
 <section class=cd><h2>Lista de feitiços ${c.mg=='a'?'arcanos':'divinos'}</h2>${lst.map((g,j)=>`<details class=rf${j<D.msl?'':''}><summary>${j+1}º nível${j<D.msl?'':' <span class=mut>(bloqueado)</span>'}</summary><div>${g.map(n=>spl(c.mg,n)).join(' · ')}</div></details>`).join('')}</section></div></div>`}
 
 function cls(D){const c=C(),L=D.lv,hd=['Nível','XP','PV','Acerto',...(c.la?['L']:[]),...(c.dp?['DP']:[]),...(c.edf?['EdF']:[]),'M','I','P','E','F'];
@@ -655,7 +701,7 @@ ${ne==k?`<label class=f><span class=lb>Título</span><input data-nt=${k} data-f=
 :`<div class=nv>${md(n.b)||'<p class=em>Vazia. Use Editar para escrever.</p>'}</div>`}</div></details>`).join('')}`}
 
 function help(){return `<div class=dh><b>Como usar a ficha</b><button class="ic hb" data-a=cx aria-label=Fechar autofocus>&#10005;</button></div>
-<h3>Salvar e carregar</h3><ul><li>Com o salvamento automático ligado (padrão), a ficha fica guardada neste navegador e aparece na tela inicial.</li><li><b>Exportar</b> baixa um arquivo .json. Guarde-o: é o backup e o jeito de levar a ficha para outro aparelho. <b>Carregar</b> abre esse arquivo.</li><li>Limpar os dados do navegador apaga as fichas que não foram exportadas. O Safari faz isso sozinho após 7 dias sem visitar o site. A tela inicial mostra quando cada ficha foi exportada pela última vez.</li><li><b>&#8630;</b> no topo ou Ctrl+Z desfaz a última alteração. Exclusões de item, anotação e feitiço podem ser desfeitas.</li><li>Recarregar a página reabre a mesma ficha e aba. O botão Voltar do navegador volta para a aba anterior.</li></ul>
+<h3>Salvar e carregar</h3><ul><li>Com o salvamento automático ligado (padrão), a ficha fica guardada neste navegador e aparece na tela inicial.</li><li><b>Exportar</b> baixa um arquivo .json. Guarde-o: é o backup e o jeito de levar a ficha para outro aparelho. <b>Carregar</b> abre esse arquivo.</li><li>Limpar os dados do navegador apaga as fichas que não foram exportadas. O Safari faz isso sozinho após 7 dias sem visitar o site. A tela inicial mostra quando cada ficha foi exportada pela última vez.</li><li>Títulos com seta abrem e fecham os detalhes da seção. A ficha lembra a escolha neste navegador.</li><li>No celular, o topo recolhe ao rolar para baixo e deixa só o resumo. Rolar para cima traz as abas de volta.</li><li><b>&#8630;</b> no topo ou Ctrl+Z desfaz a última alteração. Exclusões de item, anotação e feitiço podem ser desfeitas.</li><li>Recarregar a página reabre a mesma ficha e aba. O botão Voltar do navegador volta para a aba anterior.</li></ul>
 <h3>Criação</h3><ul><li>Os atributos são rolados à parte e digitados. Nível, PV máximo, acerto, salvaguardas, CA, idiomas, capangas e classe de peso são calculados.</li><li>O kit da classe usa os 15 ciclos de prata. O troco vai para o primeiro saco. O Símbolo Sagrado do Devoto e os 2 pergaminhos do Arcanista são itens de classe, fora do orçamento.</li><li>O nível sobe sozinho quando a experiência alcança a tabela, e o PV atual recebe o aumento do PV máximo. O campo <b>+ XP</b> soma ao total.</li><li>As salvaguardas mostradas já incluem a penalidade do Desgaste. As armas no Corpo mostram o acerto, sem os bônus positivos quando não há proficiência.</li></ul>
 <h3>Inventário</h3><ul><li><b>Corpo</b> não tem limite: armas, armaduras, anéis, colares, e também mochilas, sacos e bolsas de cinto vestidos.</li><li>Cada contêiner mostra quanto ocupa da capacidade. Um contêiner especial pode ter redução de peso: o conteúdo pesa menos para quem o carrega.</li><li>Mude o <b>Local</b> de um item para movê-lo. No celular, o local e o peso por unidade ficam no lápis. Com mais de uma unidade, a ficha pergunta quantas mover. Contêineres levam o conteúdo junto.</li><li><b>Guardado fora</b> serve para o baú do ponto seguro, um quarto ou o banco. Nada ali conta no peso.</li><li>A classe de peso (A a D) vem da soma de tudo o que está com o personagem e define o movimento. Desgaste de 5 ou mais reduz a classe.</li><li>O lápis abre a edição do item: capacidade, redução de peso, CA, moeda e notas. <b>Copiar código do item</b> gera um texto para colar na ficha de outro jogador com <b>Colar código</b>.</li></ul>
 <h3>Magia</h3><ul><li>A aba aparece para Arcanista e Devoto. Decorar respeita os Espaços de Feitiço e o nível máximo. Conjurar remove o feitiço da mente.</li><li>O nome de cada feitiço abre a página dele no Notion. <b>Novo ritual</b> zera os usos do Feitiço Representante.</li></ul>
@@ -664,12 +710,19 @@ function help(){return `<div class=dh><b>Como usar a ficha</b><button class="ic 
 function tabs(){return [['p','Personagem'],['i','Inventário'],...(C().mg?[['g','Magia']]:[]),['c','Classe'],['n','Anotações']]}
 const VIEWS={p:pers,i:inv,g:mag,c:cls,n:notes};
 function render(){
- if(!S){document.body.classList.add('hm');$('#tb').innerHTML='';$('#cn').textContent='';$('#m').innerHTML=home();sync();return}
- document.body.classList.remove('hm');const T=tabs();if(!T.some(t=>t[0]==tab))tab='p';
- $('#tb').innerHTML=T.map(([k,n])=>`<button data-a=tb data-v=${k}${tab==k?' aria-current=page':''}>${n}</button>`).join('');
- lv0=lvl();const D=derive();$('#m').innerHTML=VIEWS[tab](D);out(D);if(!FSZ)$$('main textarea').forEach(grow);sync()}
+ if(!S){document.body.classList.add('hm');$('#tb').innerHTML='';$('#cn').textContent='';$('#m').innerHTML=home();rt=ip=null;sync();return}
+ document.body.classList.remove('hm');const T=tabs(),ix=k=>T.findIndex(t=>t[0]==k);if(!T.some(t=>t[0]==tab))tab='p';
+ $('#tb').innerHTML=T.map(([k,n])=>`<button data-a=tb data-v=${k}${tab==k?' aria-current=page':''}>${n}</button>`).join('')+'<span id=ti aria-hidden=true></span>';ind(1);
+ lv0=lvl();const D=derive();$('#m').innerHTML=VIEWS[tab](D);out(D);if(!FSZ)$$('main textarea').forEach(grow);
+ // troca de aba: o painel entra pelo lado da aba escolhida
+ if(rt&&rt!=tab)$('#m').animate(RM.matches?{opacity:[0,1]}:{opacity:[0,1],translate:[Math.sign(ix(tab)-ix(rt))*12+'px 0','0 0']},{duration:320,easing:E});rt=tab;sync()}
+/** Barra sob a aba ativa. a: desliza da posição anterior até a nova. */
+function ind(a){const b=$('#tb [aria-current]'),i=$('#ti');if(!b)return;const n=[b.offsetLeft,b.offsetWidth];i.style.translate=n[0]+'px 0';i.style.scale=n[1]+' 1';
+ if(a&&ip&&ip+''!=n+''&&!RM.matches)i.animate({translate:[ip[0]+'px 0',n[0]+'px 0'],scale:[ip[1]+' 1',n[1]+' 1']},{duration:340,easing:E});ip=n}
 /** Atualiza os valores calculados sem redesenhar (mantém o foco ao digitar). */
-function out(D=derive()){$$('[data-o]').forEach(e=>e.textContent=D[e.dataset.o]??'');$$('[data-p]').forEach(e=>e.style.setProperty('--p',(D[e.dataset.p]||0)+'%'));
+function out(D=derive()){$$('[data-o]').forEach(e=>{const v=String(D[e.dataset.o]??''),o=e.textContent;if(v==o)return;e.textContent=v;
+ // números em destaque entram pelo lado da mudança: de cima se o valor caiu, de baixo se subiu
+ if(o&&e.matches('#sm b,.big>*'))e.animate(RM.matches?{opacity:[0,1]}:{opacity:[0,1],translate:['0 '+(nv(v)<nv(o)?-.85:.85)+'em','0 0'],filter:['blur(5px)','blur(0)']},{duration:300,easing:E})});$$('[data-p]').forEach(e=>e.style.setProperty('--p',(D[e.dataset.p]||0)+'%'));
  $$('[data-w]').forEach(e=>e.classList.toggle('bad',!!D[e.dataset.w]));$$('[data-ov]').forEach(e=>e.classList.toggle('over',!!D['lw_'+e.dataset.ov]));$('#cn').textContent=S.no||'Sem nome'}
 
 // ===== Persistência =====
@@ -713,6 +766,7 @@ async function relocate(x,to){let n=x.q;if(!isC(x)&&x.q>1){const r=await ask(`Qu
 // ===== Eventos =====
 document.addEventListener('click',async e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,v=t.dataset.v,R=()=>{mark(1);render()};
  if(a=='tb'){tab=v;ne=-1;render();window.scrollTo(0,0);return}
+ if(a=='fd'){const o=t.closest('[data-f]').classList.toggle('op');t.setAttribute('aria-expanded',o);F[v]=o;try{localStorage.setItem('av-f',JSON.stringify(F))}catch(x){}return}
  if(a=='th'){setth(v);return}
  if(a=='op'||a=='hp'){if(S)$('[data-a=dl]').textContent='Exportar ficha (.json) · '+ago(S.bk);const d=$('#'+a);d.showModal();d.scrollTop=0;return}
  if(a=='cx'){t.closest('dialog').close();return}
@@ -794,6 +848,10 @@ addEventListener('afterprint',()=>S&&render());
 // closedby=any fecha pelo fundo. Caminho para navegadores sem closedby (Safari).
 if(!('closedBy' in HTMLDialogElement.prototype))$$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target!=d)return;const r=d.getBoundingClientRect();
  if(e.clientY<r.top||e.clientY>r.bottom||e.clientX<r.left||e.clientX>r.right)d.close()}));
+addEventListener('resize',()=>ind());
+// celular: ao rolar para baixo o topo sobe e deixa só o resumo, ao rolar para cima volta inteiro
+addEventListener('scroll',()=>{const h=$('header'),s=$('#sm'),y=scrollY;if(Math.abs(y-sy)<8)return;
+ h.style.setProperty('--hy',(s.offsetParent?4-s.offsetTop:-h.offsetHeight)+'px');h.classList.toggle('hd',y>sy&&y>h.offsetHeight);sy=y},{passive:true});
 $('#hp').innerHTML=help();$('[data-a=au]').textContent='Salvamento automático: '+(auto?'ligado':'desligado');setth(document.documentElement.dataset.t||'');
 
 // ===== Autoteste: abra com #test e veja o console =====
@@ -825,6 +883,7 @@ if(location.hash=='#test'){const a=(c,m)=>console[c?'log':'error']((c?'ok ':'FAL
  a(fix({cl:'ladino',id:'a"b',it:[{i:'x"><i>'}]}).id=='ab'&&fix({cl:'ladino',it:[{i:'x"><i>'}]}).it[0].i=='xi','ids de arquivo sem caracteres de HTML');
  S=fix({cl:'lutador',pv:3});lv0=1;S.xp=6000;lvup();a(S.pv==5&&lv0==3,'subir de nível soma a diferença de PV');
  {const au=auto;auto=false;S=fix({cl:'ladino',no:'A'});H=[];prev=JSON.stringify(S);ht=0;S.no='B';mark(1);S.no='C';mark(1);undo();const b=S.no;undo();a(b=='B'&&S.no=='A','desfazer volta um passo por vez');auto=au;dirty=false}
+ a(nv('−1')<nv('+2')&&nv('1.234')>nv('999')&&nv('3/5')==3,'direção da rolagem dos números');
  S=null}
 route();
 </script>
