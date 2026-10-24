@@ -8,9 +8,8 @@
 <script>try{var _t=localStorage.getItem('av-t');if(_t){document.documentElement.dataset.t=_t;document.querySelector('meta[name=color-scheme]').content=_t}}catch(e){}</script>
 <style>
 *{box-sizing:border-box;margin:0;font:inherit;color:inherit}
-*{scrollbar-width:none}
-@supports not (scrollbar-width:none){::-webkit-scrollbar{display:none}}
 b,strong{font-weight:600}i,em{font-style:italic}
+a{color:var(--ac)}
 /* zoom de 130% só com largura suficiente: abaixo de 1000px a área efetiva cairia sob os breakpoints de 760px */
 :root{--z:1}
 @media(min-width:1000px){:root{--z:1.3;zoom:var(--z)}}
@@ -22,19 +21,24 @@ body{min-height:calc(100dvh/var(--z));background:var(--bg);color:var(--tx);font:
 header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;padding:8px 16px;background:var(--cd);border-bottom:1px solid var(--ln)}
 .br{font-family:var(--sf);font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);white-space:nowrap}
 .br span{margin-left:10px;font-size:15px;font-weight:400;letter-spacing:.01em;text-transform:none;color:var(--tx)}
-nav{display:flex;gap:2px;flex:1;flex-wrap:wrap}
-@media(max-width:760px){nav{order:3;flex-basis:100%;flex-wrap:nowrap;overflow-x:auto;margin:0 -8px}nav button{white-space:nowrap}}
+nav{display:flex;gap:2px;flex:1}
+#sm{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:12px;color:var(--mt);font-variant-numeric:tabular-nums}
+#sm b{color:var(--tx);font-weight:600}
+@media(max-width:760px){nav{order:3;flex-basis:100%;overflow-x:auto;margin:0 -8px;scrollbar-width:thin}nav button{white-space:nowrap}#sm{order:4;flex-basis:100%}}
 .tr{display:flex;gap:6px;align-items:center;margin-left:auto}
-#st{color:var(--mt);font-size:12px}
+#st{position:fixed;z-index:9;bottom:14px;left:50%;translate:-50% 0;max-width:90%;background:var(--tx);color:var(--bg);font-size:13px;padding:5px 14px;border-radius:20px;pointer-events:none}
+#st:empty{display:none}
 button{background:none;border:1px solid var(--ln);border-radius:7px;padding:5px 11px;color:var(--mt);cursor:pointer}
 button:hover{color:var(--tx);border-color:var(--mt)}
 button[disabled]{opacity:.4;cursor:default}
 nav button,#th button{border:0;border-bottom:2px solid transparent;border-radius:0;padding:6px 10px}
-nav button[aria-selected=true],#th button[aria-pressed=true]{color:var(--tx);border-color:var(--ac)}
+nav button[aria-current],#th button[aria-pressed=true]{color:var(--tx);border-color:var(--ac)}
 .pri{background:var(--ac);border-color:var(--ac);color:var(--cd)}
 .pri:hover{color:var(--cd);border-color:var(--ac);filter:brightness(1.1)}
 .sm{font-size:12px;padding:2px 8px}
 .ic{border:0;padding:2px 6px;line-height:1}
+.ic,.sm{min-block-size:24px;min-inline-size:24px}
+@media(pointer:coarse){.ic,.sm{min-block-size:32px;min-inline-size:32px}.ir{--a:4.8rem}.ir .ac{gap:10px}}
 .hb{border-radius:50%;width:28px;height:28px;padding:0}
 main{max-width:1180px;margin:0 auto;padding:18px 16px 64px}
 .cd{background:var(--cd);border:1px solid var(--ln);border-radius:10px;padding:14px 16px;min-width:0}
@@ -64,6 +68,10 @@ textarea.t2{min-block-size:2lh}
 .id .w2{grid-column:span 2}
 @media(max-width:420px){.id .w2{grid-column:auto}}
 .f{display:grid;gap:2px;align-content:start;min-width:0}
+.xp{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.wp{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;padding:4px 0;border-top:1px solid var(--ln);font-size:14px}
+.wp small{color:var(--mt);text-align:right}
+@media(max-width:760px){.gp>.col:nth-child(2){order:-1}}
 .at{display:grid;grid-template-columns:2.9rem 3.6rem 2.4rem 1fr;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--ln)}
 .at:first-of-type{border-top:0}
 .at b{font-family:var(--sf);font-size:16px;letter-spacing:.06em}
@@ -104,21 +112,25 @@ textarea.t2{min-block-size:2lh}
 .tbl tr.on td{background:var(--fl);font-weight:600}
 .tbl td:first-child,.tbl th:first-child{text-align:left}
 .tw{overflow-x:auto}
+.tw :is(th,td):first-child{position:sticky;left:0;z-index:1;background:var(--cd)}
+.tw tr.on td:first-child{background:linear-gradient(var(--fl),var(--fl)),var(--cd)}
 details.rf{border-top:1px solid var(--ln);padding:8px 0}
 details.rf>summary{cursor:pointer;font-family:var(--sf);font-weight:600}
 details.rf>div{padding-top:6px;font-size:14px}
 /* inventário */
 .ad{display:grid;grid-template-columns:minmax(0,1fr) 4.5rem 5rem minmax(0,12rem) auto auto;gap:6px;align-items:end}
 @media(max-width:700px){.ad{grid-template-columns:1fr 1fr}.ad>:first-child,.ad>.lc{grid-column:1/-1}}
-.ir{display:grid;grid-template-areas:"n q w t l a";grid-template-columns:minmax(0,1fr) 4.2rem 4.6rem 4.8rem minmax(0,11rem) 3.6rem;gap:6px;align-items:center;padding:3px 0;border-top:1px solid var(--ln)}
+.ir{display:grid;grid-template-areas:"n q w t l a";grid-template-columns:minmax(0,1fr) 4.2rem 4.6rem 4.8rem minmax(0,11rem) var(--a,3.6rem);gap:6px;align-items:center;padding:3px 0;border-top:1px solid var(--ln)}
 .ir.hd{border-top:0;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mt)}
 .ir>:nth-child(1){grid-area:n}.ir>:nth-child(2){grid-area:q}.ir>:nth-child(3){grid-area:w}.ir>:nth-child(4){grid-area:t}.ir>:nth-child(5){grid-area:l}.ir>:nth-child(6){grid-area:a}
-.ir input:not(:focus),.ir select:not(:focus){background:none}
-.ir:hover input,.ir:hover select{background:var(--fl)}
-.ir .nm{display:flex;align-items:center;gap:6px;min-width:0}
-.tg{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ac);border:1px solid var(--ln);border-radius:4px;padding:0 4px;white-space:nowrap}
+@media(hover:hover){.ir input:not(:focus),.ir select:not(:focus){background:none}.ir:hover input,.ir:hover select{background:var(--fl)}}
+.ir .nm{min-width:0}
+.ds{display:block;padding-left:7px;font-size:12px;color:var(--mt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tg{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ac);border:1px solid var(--ln);border-radius:4px;padding:0 4px;white-space:nowrap}
 .ir .ac{display:flex;gap:2px;justify-content:end}
-@media(max-width:640px){.ir{grid-template-areas:"n n n n a" "q w t l l";grid-template-columns:3.4rem 3.8rem 4.2rem minmax(0,1fr) 3.4rem;padding:6px 0}}
+/* no celular, peso por unidade e local ficam no diálogo do lápis */
+@media(max-width:640px){.ir{grid-template-areas:"n n n a" "d q t a";grid-template-columns:minmax(0,1fr) 3rem 3.8rem var(--a,3.6rem);row-gap:2px;padding:5px 0}
+ .ir .nm{display:contents}.ir .nm>input{grid-area:n}.ir .ds{grid-area:d}.ir>:nth-child(3),.ir>:nth-child(5),.ir.hd{display:none}}
 .ct{display:grid;gap:12px}
 .ch2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:6px}
 .ch2 b{font-family:var(--sf);font-size:16px;font-weight:600}
@@ -152,7 +164,7 @@ code{font-family:ui-monospace,monospace;font-size:.9em;background:var(--fl);bord
 .home li{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--ln)}
 .home li div{flex:1;min-width:0}
 .home ul{list-style:none;padding:0}
-body.hm .ns{display:none}
+body.hm .ns{display:none!important}
 /* diálogos */
 dialog{margin:auto;background:var(--cd);color:var(--tx);border:1px solid var(--ln);border-radius:12px;width:min(640px,94vw);max-height:calc(90dvh/var(--z));overflow:auto;padding:14px 16px;display:none}
 dialog[open]{display:block}
@@ -179,20 +191,23 @@ legend{font-family:var(--sf);font-weight:600;padding-right:8px}
 #op[open]{display:grid}
 #op::backdrop{background:none}
 #op hr{border:0;border-top:1px solid var(--ln);margin:3px 0}
+#ak{width:min(420px,94vw)}#akb{display:contents}
 #th{display:flex;border:1px solid var(--ln);border-radius:8px}#th button{flex:1}
 #hp h3{margin-top:14px}
 #hp li,#hp p{font-size:14px;color:var(--mt)}
 #hp ul{padding-left:1.2em}
 [hidden]{display:none!important}
-@media print{header,.ad,.ac,.nb,button{display:none!important}body{background:#fff}.cd{break-inside:avoid}}
+@media print{header,.ad,.ac,.nb,button{display:none!important}body{background:#fff}.cd{break-inside:avoid}.pg+.pg{break-before:page}textarea{max-block-size:none}}
 </style>
 </head>
 <body class=hm>
 <header>
 <div class=br>Arden Vul<span id=cn></span></div>
 <nav id=tb aria-label=Abas></nav>
+<div id=sm class=ns><span>PV <b data-o=pvt></b></span><span>CA <b data-o=ca></b></span><span>Desgaste <b data-o=dgt></b></span><span>Carga <b data-o=we></b></span></div>
 <div class=tr>
 <span id=st role=status></span>
+<button data-a=un class="ns hb" title="Desfazer (Ctrl+Z)" aria-label=Desfazer>&#8630;</button>
 <button data-a=op>Opções</button>
 <button data-a=hp class=hb title=Ajuda aria-label=Ajuda>?</button>
 </div>
@@ -214,6 +229,8 @@ legend{font-family:var(--sf);font-weight:600;padding-right:8px}
 </dialog>
 
 <dialog id=hp closedby=any aria-label=Ajuda></dialog>
+
+<dialog id=ak closedby=any aria-labelledby=akm><form method=dialog><p id=akm></p><input id=aki class=mt autocomplete=off aria-labelledby=akm><div class=fa><button type=button data-a=cx>Cancelar</button><span id=akb></span></div></form></dialog>
 
 <dialog id=nw closedby=any aria-labelledby=nwt>
 <form id=nf>
@@ -251,6 +268,7 @@ legend{font-family:var(--sf);font-weight:600;padding-right:8px}
 <label class=f><span class=lb>Moeda</span><select name=m><option value="">Não é moeda</option><option value=cc>Cobre</option><option value=cp>Prata</option><option value=ce>Electrum</option><option value=co>Ouro</option><option value=cpl>Platina</option></select></label>
 <label class=f><span class=lb>Armadura: CA base</span><input name=ca type=number min=0 step=1 inputmode=numeric placeholder="ex.: 11"></label>
 <label class=f><span class=lb>Escudo: bônus de CA</span><input name=sh type=number min=0 step=1 inputmode=numeric placeholder="ex.: 1"></label>
+<label class=f><span class=lb>Local</span><select name=c></select></label>
 </div>
 <fieldset><legend class=ck><input type=checkbox name=ct id=ict><label for=ict>É um contêiner</label></legend>
 <div class="fg xc">
@@ -259,6 +277,7 @@ legend{font-family:var(--sf);font-weight:600;padding-right:8px}
 <label class="ck f"><input type=checkbox name=z> Não conta o próprio peso quando no corpo</label>
 </div></fieldset>
 <fieldset><legend>Descrição e notas</legend><textarea name=d></textarea></fieldset>
+<p class=warn id=iew></p>
 <div class=fa><button type=button data-a=ic>Copiar código do item</button><button type=button data-a=cx>Cancelar</button><button class=pri>Salvar item</button></div>
 </form>
 </dialog>
@@ -327,10 +346,11 @@ arcanista:{n:'Arcanista',d:'Aprendeu sobre a magia do mundo e a manipula por mei
  kit:{$:'Saco Pequeno',it:[['Adaga'],['Porta Mapas ou Pergaminhos'],['Papel (Folha)',2,'Porta Mapas ou Pergaminhos'],['Saco Pequeno'],['Ração de Explorador',2,'Saco Pequeno'],['Pederneira',1,'Saco Pequeno'],['Tocha Simples',1,'Saco Pequeno'],['Vela',4,'Saco Pequeno'],['Giz (1 peça)',1,'Saco Pequeno'],['Cantil Comum'],['Água Potável (1 L)',1,'Cantil Comum']]}}};
 Object.values(CL).forEach(c=>c.hab.push(['Proficiências',`Armas: ${c.pa?c.pa.join(', '):'todas'}. Armaduras: ${c.pr?c.pr.join(', '):'todas'}. Escudos: ${c.pe?c.pe.join(', ')||'nenhum':'todos'}. Sem proficiência, os modificadores positivos de atributo e de classe não se aplicam com o equipamento.`]));
 
+// Níveis e páginas conferidos com a base "Lista de Feitiços" do Notion em 24/10/2026.
 const SP={a:[
-['Detectar Magia','Disco Flutuante','Enfeitiçar Pessoas','Escudo','Ler Idiomas','Ler Magias','Luz (Escuridão)','Mísseis Mágicos','Prender Portais','Proteção ao Mal','Sono','Ventriloquismo'],
-['Arrombar','Detectar Invisibilidade','Detectar Maldade','Fechadura Arcana','Força Fantasmagórica','Invisibilidade','Levitar','Localizar Objetos','Luz Contínua (Escuridão Contínua)','Percepção Extra Sensorial','Reflexos','Teia'],
-['Bola de Fogo','Clarividência','Dissipar Magia','Imobilizar Pessoas','Infravisão','Invisibilidade 3 m','Proteção ao Mal 3 m','Proteção à Projéteis','Relâmpago','Respirar na Água','Velocidade','Vôo'],
+['Detectar Magia','Disco Flutuante','Escudo','Ler Idiomas','Ler Magias','Luz (Escuridão)','Mísseis Mágicos','Prender Portais','Proteção ao Mal','Ventriloquismo'],
+['Arrombar','Detectar Invisibilidade','Detectar Maldade','Enfeitiçar Pessoas','Fechadura Arcana','Força Fantasmagórica','Invisibilidade','Levitar','Localizar Objetos','Luz Contínua (Escuridão Contínua)','Percepção Extra Sensorial','Reflexos','Teia'],
+['Bola de Fogo','Clarividência','Dissipar Magia','Imobilizar Pessoas','Infravisão','Invisibilidade 3 m','Proteção ao Mal 3 m','Proteção à Projéteis','Relâmpago','Respirar na Água','Sono','Velocidade','Vôo'],
 ['Ampliar Plantas','Confusão','Enfeitiçar Monstros','Metamorfose em massa','Metamorfosear outros','Metamorfosear-se','Muralha de Fogo','Muralha de Gelo','Olho Arcano','Porta Dimensional','Remover Maldição (Amaldiçoar)','Terreno Ilusório'],
 ['Animar os Mortos','Conjurar Elemental','Contato Extraplanar','Enfraquecer o Intelecto','Imobilizar Monstros','Muralha de Pedra','Névoa Mortal','Pedra em Lama (Lama para Pedra)','Portal Ilusório','Recipiente Arcano','Telecinésia','Teleporte'],
 ['Caçador Invisível','Concha Antimagia','Controlar o Clima','Desintegrar','Magia da Morte','Mover Terra','Partir Água','Pedra em Carne','Projetar Imagem','Reencarnação','Tarefa','Tornar Raso']],
@@ -340,6 +360,20 @@ d:[
 ['Ampliar Animais','Arma Encantada','Curar Doenças','Localizar Objetos','Luz Contínua','Remover Maldição'],
 ['Bastões em Serpentes','Criar Água','Curar Ferimentos Graves','Falar com Plantas','Neutralizar Veneno','Proteção ao Mal 3 m'],
 ['Comunhão','Criar Alimento','Dissipar o Mal','Missão','Praga de Insetos','Reviver Mortos']]};
+/** Página de cada feitiço no Notion: o id é 4013e1615acd81 + o sufixo. */
+const NU='https://app.notion.com/p/4013e1615acd81',SPU={
+a:{'Escudo':'1088e3cb9759af72c5','Detectar Magia':'139d9ef3f7fef609af','Prender Portais':'209abefa8e46d4accd','Ler Idiomas':'2983a2d2609f299f9e','Proteção ao Mal':'439ad7d434e888df0c','Ventriloquismo':'5e8bfbd5e9d192f91a','Disco Flutuante':'6191bdf04594d1464d','Mísseis Mágicos':'798091f09cdb5238ad','Luz (Escuridão)':'7fa914ecbea38801c8','Ler Magias':'de9d10fd30e339b0c1',
+'Enfeitiçar Pessoas':'1e8920f19376cce9a4','Fechadura Arcana':'3fa404dd9d8838c64e','Detectar Maldade':'4288c9ea6716051c88','Levitar':'58a984d3bca619f9d1','Localizar Objetos':'5bbe0cc05378ca5d24','Invisibilidade':'66901cc486dde2e97d','Percepção Extra Sensorial':'a7af6edc7ccf5768f0','Luz Contínua (Escuridão Contínua)':'bebf8cd7bff0d2b808','Teia':'e0aadac96064b31857','Detectar Invisibilidade':'e9a583e6103f27e315','Reflexos':'eab8acdc9f4193c26f','Força Fantasmagórica':'eea919d58ee028b283','Arrombar':'f38a7bf6ae135b8509',
+'Invisibilidade 3 m':'05bee9c78080cd1537','Relâmpago':'42a5c1c01753e2d8d0','Infravisão':'5ca1e8e3390f610303','Imobilizar Pessoas':'61847ae8327b7084cb','Velocidade':'70bc72fc5fc12407e7','Proteção ao Mal 3 m':'848b89dead055a8caa','Sono':'a486a3cb0d7e9d1a95','Vôo':'a7ab6de760312f3e4d','Bola de Fogo':'b7bc28dc20db4848a5','Respirar na Água':'bca37ee6163ac593e1','Dissipar Magia':'c99fdbdd68060531e9','Clarividência':'ca812ee94860588a73','Proteção à Projéteis':'ce8babd69779144e8c',
+'Metamorfosear outros':'098a1ee1498cca503a','Ampliar Plantas':'2db1a1ee241a9fa759','Muralha de Fogo':'5eacebc401d65743e1','Confusão':'88ae9fe4ddfec186a5','Remover Maldição (Amaldiçoar)':'99ba2fc77f7ca5fa74','Metamorfose em massa':'b3853af1a29f3a26b7','Enfeitiçar Monstros':'c4b82bf3293d71e8e5','Porta Dimensional':'d5b311ed8f8cf1df6b','Metamorfosear-se':'e785f5efcf681655d1','Muralha de Gelo':'f4ae41fa91e99d4ef6','Terreno Ilusório':'f7ad31da0d2af6fc2c','Olho Arcano':'fba128e7158a5b01eb',
+'Imobilizar Monstros':'4f965ff167dd45a283','Enfraquecer o Intelecto':'65bf94c97dc952cab3','Recipiente Arcano':'7db3d4c3f459d33db8','Muralha de Pedra':'848185e85ffb1a089d','Animar os Mortos':'8b8c5af2bdc3690501','Portal Ilusório':'a5870fd146741039bd','Teleporte':'a8bf01d9c574a93f4b','Pedra em Lama (Lama para Pedra)':'c9917edc06a4769529','Conjurar Elemental':'c9b331f4f96d9c485c','Telecinésia':'dbbaabdabb6fc8f48c','Contato Extraplanar':'e3aacceb6edbdea189','Névoa Mortal':'f3b9b9c6c2dfcf1fb1',
+'Mover Terra':'04b2afc434177a6e9b','Magia da Morte':'06a22ae6ddf9bd25e2','Controlar o Clima':'118a8ad020df89fc4f','Concha Antimagia':'1986d3d0e7f7201688','Projetar Imagem':'5ebb5fe8a98192331f','Caçador Invisível':'7485e6ee210a8a24b4','Pedra em Carne':'8c90adcb5d70803478','Tornar Raso':'ad8e1bdd3c5b51dffb','Reencarnação':'c1b31de6950474dd64','Partir Água':'d09cf4c4576a349843','Tarefa':'e8928bc65c5925fa9a','Desintegrar':'f18aeedb1650ba13fd'},
+d:{'Purificar Água e Alimentos':'44a737d62a0f04f333','Detectar o Mal':'51956afe33319a9e07','Proteção ao Mal':'c3b043f43d978acdc4','Resistir ao Frio':'c8ae50e2b31cd69b45','Luz':'d6a9f7fd67d52cbd7d','Remover Medo':'eb8aeac9f1e6a1683d','Curar Ferimentos Leves':'eba137d3ad47fb1000','Detectar Magia':'f8becec2478c320b48',
+'Silêncio 4,5 m':'0ba1ecc783097a73fb','Resistir ao Fogo':'3a9c0bfc2c958279c3','Revelar Tendência':'489ce5d7a181b131f3','Imobilizar Pessoas':'4aa82edb762b2a3874','Benção':'4eba98c5d16fce3e20','Encantar Cobras':'60afa7d67295e38dd2','Falar com Animais':'91963ff696cdeabb7e','Encontrar Armadilhas':'b2ba20c86c630ce585',
+'Arma Encantada':'04baedea72f6d85de8','Localizar Objetos':'3287f9e7fc97861bf9','Remover Maldição':'3d97fad03050134db1','Curar Doenças':'7eaa4fc3d4d3a848ef','Ampliar Animais':'8fb855eb2e8891cab3','Luz Contínua':'a9836fdad76de466ec',
+'Proteção ao Mal 3 m':'00a65af4d2ad4cf8a4','Falar com Plantas':'259949c6a4d2e218e2','Criar Água':'379e83da812dd580b4','Curar Ferimentos Graves':'c0be42ede8c78b3b57','Bastões em Serpentes':'c2b89ce0286aac9222','Neutralizar Veneno':'d594b9eb4be683c73c',
+'Missão':'0b8180fdfd3bf38a1b','Praga de Insetos':'329599d920d4462e0b','Reviver Mortos':'64b67ae0c69c1f4aa6','Criar Alimento':'979884f41150b15c67','Comunhão':'af83aff89865ad1794','Dissipar o Mal':'c58b2ed2e6fbd0a5f9'}};
+const spl=(g,n)=>SPU[g][n]?`<a href="${NU+SPU[g][n]}" target=_blank rel=noopener>${esc(n)}</a>`:esc(n);
 const DOM={ordem:['Ordem','Expulsar Mortos-Vivos','Você ergue o símbolo e dita a ordem natural do mundo. Alvos: mortos-vivos e criaturas que violam a ordem natural (possuídos, invocações etc.).',
  ['<b>A (Expulso):</b> os alvos fogem da sua presença por 1 + nível Turnos e não conseguem se aproximar.','<b>S (Destruído):</b> os alvos se desfazem instantaneamente.']],
 neutro:['Neutralidade','Impor a Balança','Você mostra o penhor da divindade e declara uma pausa. Alvos: criaturas inteligentes, capazes de entender uma troca e sua língua.',
@@ -388,7 +422,7 @@ const CATR=[
 const CAT=new Map(CATR.map(([n,t,p,w,d,x])=>[n,{n,t,p,w,d,x:x||{}}]));
 
 // ===== Estado =====
-let S=null,tab='p',ne=-1,dirty=false,sid,tid,auto=true,eid=null;
+let S=null,tab='p',ne=-1,dirty=false,sid,tid,auto=true,eid=null,H=[],prev='',ht=0,lv0=1;
 try{auto=localStorage.getItem(AK)!='0'}catch(e){}
 const lsRead=()=>{try{return JSON.parse(localStorage.getItem(LS))||{}}catch(e){return {}}};
 const C=()=>CL[S.cl];
@@ -408,13 +442,15 @@ const pct=(a,b)=>b?Math.min(100,Math.max(0,100*a/b)):0;
 function tree(r){const o=[],go=(p,d,path)=>kids(p).filter(isC).forEach(x=>{o.push({x,d,path});go(x.i,d+1,[...path,x.n])});go(r,0,[r=='corpo'?'Corpo':'Fora do personagem']);return o}
 
 /** Normaliza um item vindo de arquivo, código colado ou kit. */
-function fi(x){const N=(v,d=0)=>Number.isFinite(+v)&&v!==''&&v!=null?+v:d,o={i:String(x.i||uid()),n:String(x.n??'Item'),q:Math.max(0,N(x.q,1)),w:Math.max(0,N(x.w)),c:String(x.c||'corpo'),t:String(x.t||''),d:String(x.d||'')};
+const cleanId=v=>String(v??'').replace(/[^\w-]/g,''); // ids vão para atributos HTML: só letras, números, _ e -
+function fi(x){const N=(v,d=0)=>Number.isFinite(+v)&&v!==''&&v!=null?+v:d,o={i:cleanId(x.i)||uid(),n:String(x.n??'Item'),q:Math.max(0,N(x.q,1)),w:Math.max(0,N(x.w)),c:cleanId(x.c)||'corpo',t:String(x.t||''),d:String(x.d||'')};
  if(x.cap!=null&&x.cap!==''){o.cap=Math.max(0,N(x.cap));o.r=Math.min(100,Math.max(0,N(x.r)));o.z=!!x.z;o.q=1}
  if(N(x.ca))o.ca=N(x.ca);if(N(x.sh))o.sh=N(x.sh);if(MO[x.m])o.m=x.m;return o}
 /** Valida uma ficha carregada de arquivo ou do navegador. @returns {object|null} */
 function fix(o){if(!o||typeof o!='object'||!CL[o.cl])return null;const T=v=>String(v??''),N=v=>Number.isFinite(+v)?+v:0;
- const s={v:1,id:T(o.id)||uid(),ts:N(o.ts),no:T(o.no),jo:T(o.jo),cl:o.cl,xp:Math.max(0,N(o.xp)),pv:N(o.pv),at:{},li:T(o.li??o.la),se:T(o.se),dg:[0,1,2].map(k=>Math.max(0,N(o.dg?.[k]))),cab:N(o.cab),
-  fe:(Array.isArray(o.fe)?o.fe:[]).filter(f=>f&&f.n).map(f=>({n:T(f.n),l:Math.min(6,Math.max(1,N(f.l)||1))})),fo:T(o.fo),dv:T(o.dv),dt:o.dt=='menor'?'menor':'maior',dm:DOM[o.dm]?o.dm:'ordem',ru:Math.max(0,N(o.ru)),
+ const s={v:1,id:cleanId(o.id)||uid(),ts:N(o.ts),bk:N(o.bk),no:T(o.no),jo:T(o.jo),cl:o.cl,xp:Math.max(0,N(o.xp)),pv:N(o.pv),at:{},li:T(o.li??o.la),se:T(o.se),dg:[0,1,2].map(k=>Math.max(0,N(o.dg?.[k]))),cab:N(o.cab),
+  // o nível vem da lista atual (o Notion muda níveis), o salvo só vale para feitiços fora da lista
+  fe:(Array.isArray(o.fe)?o.fe:[]).filter(f=>f&&f.n).map(f=>({n:T(f.n),l:Math.min(6,Math.max(1,SP[CL[o.cl].mg]?.findIndex(g=>g.includes(T(f.n)))+1||N(f.l)||1))})),fo:T(o.fo),dv:T(o.dv),dt:o.dt=='menor'?'menor':'maior',dm:DOM[o.dm]?o.dm:'ordem',ru:Math.max(0,N(o.ru)),
   it:(Array.isArray(o.it)?o.it:[]).filter(x=>x&&typeof x=='object').map(fi),nt:(Array.isArray(o.nt)?o.nt:[]).map(n=>({t:T(n?.t),b:T(n?.b),o:!!n?.o}))};
  AT.forEach(([k])=>{const v=o.at?.[k];s.at[k]=v===''||v==null?'':Math.min(18,Math.max(0,N(v)))});
  const ok=new Set(s.it.filter(isC).map(x=>x.i));
@@ -436,22 +472,28 @@ function newSheet(fd){const cl=fd.get('cl'),ex=cl=='arcanista'?['s1','s2'].map(k
 
 // ===== Derivados =====
 function derive(){const c=C(),D={},L=lvl(),i=L-1,m={};AT.forEach(([k])=>m[k]=mod(S.at[k]));
- D.lv=L;D.nx=L<10?c.xp[L].toLocaleString('pt-BR'):'máximo';D.pvm=c.pv[i];D.pvp=pct(num(S.pv),c.pv[i]);
+ D.lv=L;D.nx=L<10?`faltam ${Math.max(0,c.xp[L]-num(S.xp)).toLocaleString('pt-BR')} XP`:'nível máximo';D.pvm=c.pv[i];D.pvp=pct(num(S.pv),c.pv[i]);
+ D.pvt=num(S.pv)+'/'+c.pv[i];D.pvl=num(S.pv)*4<=c.pv[i]?'1':'';
  const dr=Math.max(1,2+m.fo),b=bk(S.at.in),cb=bk(S.at.ca);
  D.lg=['Nativo, com dificuldade de expressão','Nativo','Nativo','Nativo','Nativo + 1','Nativo + 2','Nativo + 3'][b];D.lit=b<2?'Analfabeto':b<3?'Básica':'Letrado';
  D.rea=sg(m.ca);D.cap=cb+1;D.loy=cb+4;
  const ef={fo:`Corpo a corpo ${sg(m.fo)} · arrombar portas ${dr} em 6`,de:`Ataques à distância ${sg(m.de)}`,co:`CA ${sg(m.co)}`,in:`${D.lg} · ${D.lit}`,sa:`Salvaguardas contra magia ${sg(m.sa)}`,ca:`Reação ${sg(m.ca)} · ${D.cap} capangas · lealdade ${D.loy}`};
  AT.forEach(([k])=>{D['m_'+k]=sg(m[k]);D['e_'+k]=ef[k]});
- c.sv[i].forEach((v,k)=>D['sv'+k]=v);D.svm=sg(m.sa);
+ D.svm=sg(m.sa);
  D.ac=sg(c.ac[i]);D.cac=sg(c.ac[i]+m.fo);D.dis=sg(c.ac[i]+m.de);D.dp=c.dp?c.dp[i]:'—';D.la=c.la?sg(c.la[i]):'';
  // CA pelo que está no corpo
  const body=kids('corpo'),ar=body.filter(x=>x.ca).sort((a,b)=>b.ca-a.ca)[0],sh=body.filter(x=>x.sh).sort((a,b)=>b.sh-a.sh)[0];
  D.ca=(ar?ar.ca:10)+(sh?sh.sh:0)+m.co+num(S.cab);D.cad=[(ar?ar.n:'Sem armadura')+' '+(ar?ar.ca:10),sh&&sh.n+' +'+sh.sh,'CON '+sg(m.co),num(S.cab)&&'ajuste '+sg(num(S.cab))].filter(Boolean).join(' · ');
  const np=[...body.filter(x=>c.pa&&ARMAS.includes(x.n)&&!c.pa.includes(x.n)),...body.filter(x=>c.pr&&x.ca&&!c.pr.includes(x.n)),...body.filter(x=>c.pe&&x.sh&&!c.pe.includes(x.n))].map(x=>x.n);
  D.npf=np.length?'Sem proficiência: '+[...new Set(np)].join(', '):'';
+ // armas no corpo: sem proficiência, os bônus positivos de classe e de atributo não contam
+ body.filter(x=>ARMAS.includes(x.n)).forEach(x=>{const d=CAT.get(x.n).d,p=!c.pa||c.pa.includes(x.n),q=v=>p?v:Math.min(v,0),r=d.match(/\((\d[^)]*)\)/);
+  D['wa_'+x.i]=[/Corpo a Corpo/.test(d)&&'corpo a corpo '+sg(q(c.ac[i])+q(m.fo)),/Disparo|Arremesso/.test(d)&&'distância '+sg(q(c.ac[i])+q(m.de))+(r?' ('+r[1]+')':''),!p&&'sem proficiência'].filter(Boolean).join(' · ')});
  // desgaste
  const g=S.dg.reduce((a,v)=>a+num(v),0),hi=Math.max(...S.dg.map(num)),crit=['Estresse: insanidade','Exaustão: colapso','Privação: morte'].filter((_,k)=>num(S.dg[k])==hi).join(' / ');
  D.dgt=g;D.dge=g<=2?'Sem efeito':g<=4?'−1 em testes de atributos e salvaguardas':g<=6?'−2 em testes de atributos e salvaguardas · classe de movimento −1':g<=8?'−4 em testes de atributos e salvaguardas · classe de movimento −2':'Estado crítico · '+crit;
+ // salvaguarda é 1d20 ≥ valor, então a penalidade do Desgaste soma ao valor
+ const dp=g<3?0:g<5?1:g<7?2:4;c.sv[i].forEach((v,k)=>D['sv'+k]=v+dp);D.svd=dp?`Valores com +${dp} do Desgaste.`:'';
  // peso
  S.it.forEach(x=>{D['iw_'+x.i]=fmt(eff(x));if(isC(x)){const l=load(x.i);D['ld_'+x.i]=fmt(l);D['lp_'+x.i]=x.cap?pct(l,x.cap):0;D['lw_'+x.i]=x.cap&&l>x.cap?'Excede a capacidade em '+fmt(l-x.cap)+' c':''}});
  const T=load('corpo'),k=c.pc.findIndex(v=>T<=v),sf=g>=7?2:g>=5?1:0,ke=k<0?4:k+sf;
@@ -487,18 +529,19 @@ const inp=(k,v,a='')=>`<input data-k="${k}" value="${esc(v)}" ${a}>`;
 function home(){const L=Object.values(lsRead()).map(fix).filter(Boolean).sort((a,b)=>b.ts-a.ts);
  return `<section class=home><p class=lb>The Halls of Arden Vul</p><h1>Os Salões de Arden Vul</h1><p class=mut>Ficha de personagem. Escolha uma ficha salva neste navegador, carregue um arquivo .json ou crie um personagem novo.</p>
  <div class=ac2><button class=pri data-a=nw>Criar nova ficha</button><button data-a=ld>Carregar arquivo (.json)</button></div>
- <h2>Fichas neste navegador</h2>${L.length?`<ul>${L.map(s=>`<li><div><b>${esc(s.no)||'Sem nome'}</b><br><span class=mut>${CL[s.cl].n}${s.jo?' · '+esc(s.jo):''}</span></div><button data-a=oh data-v="${s.id}">Abrir</button></li>`).join('')}</ul>`:'<p class=em>Nenhuma ficha salva neste navegador.</p>'}</section>`}
+ <h2>Fichas neste navegador</h2>${L.length?`<ul>${L.map(s=>`<li><div><b>${esc(s.no)||'Sem nome'}</b><br><span class=mut>${CL[s.cl].n}${s.jo?' · '+esc(s.jo):''} · </span><span class=${stale(s)?'bad':'mut'}>${ago(s.bk)}</span></div><button data-a=oh data-v="${s.id}">Abrir</button></li>`).join('')}</ul>
+ <p class=note>O navegador pode apagar estes dados. O Safari apaga após 7 dias sem visitar o site. Exporte o arquivo .json pelo menu Opções.</p>`:'<p class=em>Nenhuma ficha salva neste navegador.</p>'}</section>`}
 
-function pers(D){const c=C();
+function pers(D){const c=C(),W=kids('corpo').filter(x=>ARMAS.includes(x.n));
+ // PV, ajuste de CA e + XP sem inputmode=numeric: o teclado numérico do iOS não tem sinal de menos
  return `<div class=id>
 <label class="f w2"><span class=lb>Nome</span>${inp('no',S.no,'aria-label=Nome')}</label>
 <label class=f><span class=lb>Jogador(a)</span>${inp('jo',S.jo)}</label>
 <label class=f><span class=lb>Classe</span><select data-k=cl data-re>${opts(Object.entries(CL).map(([k,v])=>[k,v.n]),S.cl)}</select></label>
-<label class=f><span class=lb>Experiência</span>${inp('xp',S.xp,'type=number min=0 inputmode=numeric class=num')}</label>
-<div class=f><span class=lb>Nível</span><span class=big>${O('lv')}</span></div>
-<div class=f><span class=lb>Próximo nível (XP)</span><span class=big>${O('nx')}</span></div>
+<div class=f><span class=lb>Experiência</span><div class=xp>${inp('xp',S.xp,'type=number min=0 inputmode=numeric class=num aria-label=Experiência')}<input type=number data-ax class=num placeholder="+ XP" aria-label="Somar XP" title="Soma ao total. Use negativo para corrigir."></div></div>
+<div class=f><span class=lb>Nível</span><span class=big>${O('lv')}</span><small class=mut>${O('nx')}</small></div>
 </div>
-<div class=g>
+<div class="g gp">
 <div class=col>
 <section class=cd><h2>Atributos</h2>${AT.map(([k,a,n])=>`<div class=at><b title="${n}">${a}</b><input type=number min=3 max=18 inputmode=numeric data-k="at.${k}" value="${esc(S.at[k])}" aria-label="${n}"><span class=md>${O('m_'+k)}</span><small>${O('e_'+k)}</small></div>`).join('')}</section>
 <section class=cd><h2>Idiomas e social</h2><dl class=kv><dt>Idiomas permitidos</dt><dd>${O('lg')}</dd><dt>Alfabetização</dt><dd>${O('lit')}</dd><dt>Reação (CAR)</dt><dd>${O('rea')}</dd><dt>Máximo de capangas</dt><dd>${O('cap')}</dd><dt>Lealdade dos contratados</dt><dd>${O('loy')}</dd></dl>
@@ -507,15 +550,16 @@ function pers(D){const c=C();
 </div>
 <div class=col>
 <section class=cd><h2>Combate</h2>
-<div class=pv><span class=lb>PV</span><input type=number inputmode=numeric data-k=pv value="${esc(S.pv)}" aria-label="PV atuais"><span class="big mut">/ ${O('pvm')}</span></div><div class=bar data-p=pvp></div>
+<div class=pv><span class=lb>PV</span><input type=number data-k=pv value="${esc(S.pv)}" aria-label="PV atuais"><span class="big mut">/ ${O('pvm')}</span></div><div class=bar data-p=pvp data-w=pvl></div>
 <div class="st mt"><div class=sb><span class=lb>CA</span><span class=big>${O('ca')}</span></div><div class=sb><span class=lb>Acerto</span><span class=big>${O('ac')}</span></div>
 <div class=sb><span class=lb>Corpo a corpo</span><span class=big>${O('cac')}</span><small>acerto + FOR</small></div><div class=sb><span class=lb>À distância</span><span class=big>${O('dis')}</span><small>acerto + DES</small></div>
 ${c.dp?`<div class=sb><span class=lb>Dano padrão</span><span class=big>${O('dp')}</span></div>`:''}${c.edf?`<div class=sb><span class=lb>Espaços</span><span class=big>${O('edu')}/${O('edf')}</span><small>de feitiço</small></div>`:''}${c.la?`<div class=sb><span class=lb>Ladinagem</span><span class=big>${O('la')}</span></div>`:''}</div>
+${W.length?`<h3>Armas no corpo</h3>${W.map(x=>`<div class=wp><span>${esc(x.n)}</span><small data-o="wa_${x.i}"></small></div>`).join('')}`:''}
 <p class=note>CA: ${O('cad')}. Armadura e escudo contam quando estão no Corpo, no inventário.</p>
-<label class="f mt" style="max-width:12rem"><span class=lb>Ajuste de CA (itens mágicos etc.)</span>${inp('cab',S.cab||'','type=number inputmode=numeric')}</label>
+<label class="f mt" style="max-width:12rem"><span class=lb>Ajuste de CA (itens mágicos etc.)</span>${inp('cab',S.cab||'','type=number')}</label>
 <p class=warn data-o=npf></p></section>
 <section class=cd><h2>Salvaguardas <small>1d20 ≥ valor</small></h2>${SV.map(([a,n,d],k)=>`<div class=sv><i>${a}</i><div>${n}<small>${d}</small></div><span class=big>${O('sv'+k)}</span></div>`).join('')}
-<p class=note>Contra efeitos de origem mágica, some o modificador de SAB: ${O('svm')}.</p></section>
+<p class=warn data-o=svd></p><p class=note>Contra efeitos de origem mágica, some o modificador de SAB: ${O('svm')}.</p></section>
 </div>
 <div class=col>
 <section class=cd><h2>Carga e movimento</h2>
@@ -526,12 +570,15 @@ ${c.dp?`<div class=sb><span class=lb>Dano padrão</span><span class=big>${O('dp'
 <section class=cd><h2>Desgaste <small>total ${O('dgt')}</small></h2>
 <div class=dg>${['Estresse','Exaustão','Privação'].map((n,k)=>`<label class=f><span class=lb>${n}</span>${inp('dg.'+k,S.dg[k],'type=number min=0 inputmode=numeric')}</label>`).join('')}</div>
 <p class=note>${O('dge')}</p>${S.cl=='andarilho'?'<p class=note>Acostumado com Viagens: pode começar a excursão com −4 no Desgaste.</p>':''}</section>
-</div></div>
-<section class="cd mt hab"><h2>Habilidades · ${c.n}</h2>${c.hab.map(([t,d])=>`<p><b>${t}.</b> ${d}</p>`).join('')}</section>`}
+</div></div>`}
 
-function inv(D){const L=[['corpo','Corpo'],...[...tree('corpo'),...tree('fora')].map(({x,path})=>[x.i,[...path.slice(1),x.n].join(' › ')+(root(x)=='fora'?' (fora)':'')])];
- const sel=x=>`<select data-mv="${x.i}" aria-label="Local de ${esc(x.n)}">${L.filter(([k])=>{const y=byId(k);return k!=x.i&&!(y&&isC(x)&&inside(y,x))}).map(([k,n])=>`<option value="${k}"${k==x.c?' selected':''}>${esc(n)}</option>`).join('')}<option value=fora${x.c=='fora'?' selected':''}>${isC(x)?'Fora, como local próprio':'Fora, sem local'}</option></select>`;
- const row=x=>`<div class=ir><div class=nm><input data-it="${x.i}" data-f=n value="${esc(x.n)}" aria-label="Nome" title="${esc(x.d)}">${isC(x)?'<span class=tg>contêiner</span>':x.m?'<span class=tg>moeda</span>':''}</div>
+/** Locais possíveis: Corpo e cada contêiner, com o caminho até ele. */
+const places=()=>[['corpo','Corpo'],...[...tree('corpo'),...tree('fora')].map(({x,path})=>[x.i,[...path.slice(1),x.n].join(' › ')+(root(x)=='fora'?' (fora)':'')])];
+/** Destinos para x, sem ele mesmo nem o que está dentro dele. */
+const locOpts=(x,L=places())=>L.filter(([k])=>{const y=byId(k);return k!=x.i&&!(y&&isC(x)&&inside(y,x))}).map(([k,n])=>`<option value="${k}"${k==x.c?' selected':''}>${esc(n)}</option>`).join('')+`<option value=fora${x.c=='fora'?' selected':''}>${isC(x)?'Fora, como local próprio':'Fora, sem local'}</option>`;
+function inv(D){const L=places();
+ const sel=x=>`<select data-mv="${x.i}" aria-label="Local de ${esc(x.n)}">${locOpts(x,L)}</select>`;
+ const row=x=>`<div class=ir><div class=nm><input data-it="${x.i}" data-f=n value="${esc(x.n)}" aria-label="Nome" title="${esc(x.d)}">${isC(x)||x.m||x.d?`<small class=ds>${isC(x)?'<span class=tg>contêiner</span> ':x.m?'<span class=tg>moeda</span> ':''}${esc(x.d)}</small>`:''}</div>
 ${isC(x)?'<span class="num mut">1</span>':`<input type=number min=0 step=1 inputmode=numeric class=num data-it="${x.i}" data-f=q value="${x.q}" aria-label=Quantidade>`}
 <input type=number min=0 step=any inputmode=decimal class=num data-it="${x.i}" data-f=w value="${x.w}" aria-label="Peso por unidade">
 <span class=num>${O('iw_'+x.i)} c</span>${sel(x)}
@@ -555,16 +602,16 @@ ${isC(x)?'<span class="num mut">1</span>':`<input type=number min=0 step=1 input
 <button class=pri>Adicionar</button><button type=button data-a=ip title="Colar o código de um item copiado de outra ficha">Colar código</button></form></section>
 <h2 class=mt style="margin-top:22px">Com o personagem</h2>
 <div class=ct><section class=cd><div class=ch2><b>Corpo</b><span class=mut>vestido, empunhado ou preso ao corpo</span><span class=cap>sem limite</span></div>${rows('corpo')}</section>${tree('corpo').map(card).join('')}</div>
-<h2 style="margin-top:22px">Guardado fora do personagem <small><button class=sm data-a=nl>+ Local de armazenamento</button></small></h2>
+<h2 style="margin-top:22px">Guardado fora do personagem</h2><div class=nb><button class=sm data-a=nl>+ Local de armazenamento</button></div>
 <div class=ct>${tree('fora').map(card).join('')||'<p class=em>Nenhum local. Crie um baú no ponto seguro, um quarto alugado ou uma conta no banco e mova itens para lá. Nada guardado fora conta no peso.</p>'}
 ${fx.length?`<section class=cd><div class=ch2><b>Fora, sem local</b></div>${rows('fora')}</section>`:''}</div>`}
 
 function mag(D){const c=C(),lst=SP[c.mg],dv=S.cl=='devoto';
- const av=lst.slice(0,D.msl).map((g,j)=>`<optgroup label="${j+1}º nível">${g.filter(n=>!S.fe.some(f=>f.n==n)).map(n=>`<option value="${j+1}|${esc(n)}">${esc(n)}</option>`).join('')}</optgroup>`).join('');
+ const fr=D.edf-D.edu,av=lst.slice(0,D.msl).map((g,j)=>`<optgroup label="${j+1}º nível${j+1>fr?' · sem espaço livre':''}"${j+1>fr?' disabled':''}>${g.filter(n=>!S.fe.some(f=>f.n==n)).map(n=>`<option value="${j+1}|${esc(n)}">${esc(n)}</option>`).join('')}</optgroup>`).join('');
  const dm=DOM[S.dm];
  return `<div class=g><div class=col><section class=cd><h2>Espaços de feitiço <small>nível máximo de feitiço: ${D.msl}º</small></h2>
 <div class=wl><span class=big>${O('edu')}</span><div>de <b>${O('edf')}</b> espaços ocupados<br><span class=mut>Cada feitiço ocupa espaços iguais ao seu nível.</span></div></div><div class="bar mt" data-p=edp data-w=edw></div><p class=warn data-o=edw></p>
-<h3>Decorados</h3>${S.fe.length?`<ul class=fl>${S.fe.map((f,k)=>`<li class=fe><span>${esc(f.n)}</span><span class=mut>${f.l}º</span><button class=sm data-a=fc data-v=${k} title="Conjurar consome o feitiço da mente">Conjurar</button><button class=ic data-a=fx data-v=${k} aria-label="Esquecer ${esc(f.n)}">&#10005;</button></li>`).join('')}</ul>`:'<p class=em>Nenhum feitiço decorado.</p>'}
+<h3>Decorados</h3>${S.fe.length?`<ul class=fl>${S.fe.map((f,k)=>`<li class=fe><span>${spl(c.mg,f.n)}</span><span class=mut>${f.l}º</span><button class=sm data-a=fc data-v=${k} title="Conjurar consome o feitiço da mente">Conjurar</button><button class=ic data-a=fx data-v=${k} aria-label="Esquecer ${esc(f.n)}">&#10005;</button></li>`).join('')}</ul>`:'<p class=em>Nenhum feitiço decorado.</p>'}
 <form id=fef class="ad mt" style="grid-template-columns:1fr auto"><label class=f><span class=lb>Decorar</span><select name=s required>${av}</select></label><button class=pri>Decorar</button></form>
 <p class=note>${dv?'Ritual de 1 hora por nível do feitiço mais alto pedido. Interromper causa Estresse igual a esse nível.':'1 hora de estudo por nível de cada feitiço, com a fonte completa. Interromper causa Estresse igual ao nível do feitiço.'} Conjurar leva 10 segundos por nível.</p></section>
 ${dv?'':`<section class=cd><h2>Foco de estudo</h2><select data-k=fo>${opts([['','—'],['Alteração','Alteração'],['Criação','Criação'],['Percepção','Percepção']],S.fo)}</select><p class=note>Metade do tempo gasto em feitiços desse domínio.</p></section>`}</div>
@@ -572,10 +619,10 @@ ${dv?'':`<section class=cd><h2>Foco de estudo</h2><select data-k=fo>${opts([['',
 <label class=f><span class=lb>Tipo</span><select data-k=dt data-re>${opts([['maior','Maior'],['menor','Menor (até 3º nível)']],S.dt)}</select></label>
 <label class=f><span class=lb>Domínio</span><select data-k=dm data-re>${opts(Object.entries(DOM).map(([k,v])=>[k,v[0]]),S.dm)}</select></label></div></section>
 <section class=cd><h2>Feitiço Representante · ${dm[1]}</h2><p>${dm[2]}</p>${dm[3].map(t=>`<p class=note>${t}</p>`).join('')}
-<h3>Usos por ritual <small>afeta até ${O('rpa')} criaturas</small></h3><div class=uses>${D.rpu?Array.from({length:D.rpu},(_,k)=>`<input type=checkbox data-a=ru data-v=${k}${k<S.ru?' checked':''} aria-label="Uso ${k+1}">`).join(''):'<span class=em>Nenhum no nível 1. Ganha 1 uso no nível 2.</span>'}</div>
+<h3>Usos por ritual <small>afeta até ${O('rpa')} criaturas</small></h3><div class=uses>${D.rpu?Array.from({length:D.rpu},(_,k)=>`<input type=checkbox data-a=ru data-v=${k}${k<S.ru?' checked':''} aria-label="Uso ${k+1}">`).join('')+'<button class=sm data-a=rr>Novo ritual</button>':'<span class=em>Nenhum no nível 1. Ganha 1 uso no nível 2.</span>'}</div>
 <h3>Rolagem em 2d6 contra o maior PV do grupo alvo</h3><div class=tw><table class=tbl><tr><th>PV do alvo</th>${[1,2,3,4,5,6,7,8,'9+'].map(v=>`<th>${v}</th>`).join('')}</tr><tr class=on><td>Nível ${D.lv}</td>${repRow(D.lv).map(v=>`<td>${v}</td>`).join('')}</tr></table></div>
 <p class=note>Número: mínimo em 2d6 · A: sucesso automático · S: sucesso maior · —: impossível. Exige a pronúncia e o símbolo sagrado.</p></section>`:''}
-<section class=cd><h2>Lista de feitiços ${c.mg=='a'?'arcanos':'divinos'}</h2>${lst.map((g,j)=>`<details class=rf${j<D.msl?'':''}><summary>${j+1}º nível${j<D.msl?'':' <span class=mut>(bloqueado)</span>'}</summary><div>${g.join(' · ')}</div></details>`).join('')}</section></div></div>`}
+<section class=cd><h2>Lista de feitiços ${c.mg=='a'?'arcanos':'divinos'}</h2>${lst.map((g,j)=>`<details class=rf${j<D.msl?'':''}><summary>${j+1}º nível${j<D.msl?'':' <span class=mut>(bloqueado)</span>'}</summary><div>${g.map(n=>spl(c.mg,n)).join(' · ')}</div></details>`).join('')}</section></div></div>`}
 
 function cls(D){const c=C(),L=D.lv,hd=['Nível','XP','PV','Acerto',...(c.la?['L']:[]),...(c.dp?['DP']:[]),...(c.edf?['EdF']:[]),'M','I','P','E','F'];
  return `<section class=cd><h2>${c.n}</h2><p>${c.d}</p></section>
@@ -608,29 +655,47 @@ ${ne==k?`<label class=f><span class=lb>Título</span><input data-nt=${k} data-f=
 :`<div class=nv>${md(n.b)||'<p class=em>Vazia. Use Editar para escrever.</p>'}</div>`}</div></details>`).join('')}`}
 
 function help(){return `<div class=dh><b>Como usar a ficha</b><button class="ic hb" data-a=cx aria-label=Fechar autofocus>&#10005;</button></div>
-<h3>Salvar e carregar</h3><ul><li>Com o salvamento automático ligado (padrão), a ficha fica guardada neste navegador e aparece na tela inicial.</li><li><b>Exportar</b> baixa um arquivo .json. Guarde-o: é o backup e o jeito de levar a ficha para outro aparelho. <b>Carregar</b> abre esse arquivo.</li><li>Limpar os dados do navegador apaga as fichas que não foram exportadas.</li></ul>
-<h3>Criação</h3><ul><li>Os atributos são rolados à parte e digitados. Nível, PV máximo, acerto, salvaguardas, CA, idiomas, capangas e classe de peso são calculados.</li><li>O kit da classe usa os 15 ciclos de prata. O troco vai para o primeiro saco. O Símbolo Sagrado do Devoto e os 2 pergaminhos do Arcanista são itens de classe, fora do orçamento.</li><li>O nível sobe sozinho quando a experiência alcança a tabela.</li></ul>
-<h3>Inventário</h3><ul><li><b>Corpo</b> não tem limite: armas, armaduras, anéis, colares, e também mochilas, sacos e bolsas de cinto vestidos.</li><li>Cada contêiner mostra quanto ocupa da capacidade. Um contêiner especial pode ter redução de peso: o conteúdo pesa menos para quem o carrega.</li><li>Mude o <b>Local</b> de um item para movê-lo. Com mais de uma unidade, a ficha pergunta quantas mover. Contêineres levam o conteúdo junto.</li><li><b>Guardado fora</b> serve para o baú do ponto seguro, um quarto ou o banco. Nada ali conta no peso.</li><li>A classe de peso (A a D) vem da soma de tudo o que está com o personagem e define o movimento. Desgaste de 5 ou mais reduz a classe.</li><li>O lápis abre a edição do item: capacidade, redução de peso, CA, moeda e notas. <b>Copiar código do item</b> gera um texto para colar na ficha de outro jogador com <b>Colar código</b>.</li></ul>
-<h3>Magia</h3><ul><li>A aba aparece para Arcanista e Devoto. Decorar respeita os Espaços de Feitiço e o nível máximo. Conjurar remove o feitiço da mente.</li></ul>
+<h3>Salvar e carregar</h3><ul><li>Com o salvamento automático ligado (padrão), a ficha fica guardada neste navegador e aparece na tela inicial.</li><li><b>Exportar</b> baixa um arquivo .json. Guarde-o: é o backup e o jeito de levar a ficha para outro aparelho. <b>Carregar</b> abre esse arquivo.</li><li>Limpar os dados do navegador apaga as fichas que não foram exportadas. O Safari faz isso sozinho após 7 dias sem visitar o site. A tela inicial mostra quando cada ficha foi exportada pela última vez.</li><li><b>&#8630;</b> no topo ou Ctrl+Z desfaz a última alteração. Exclusões de item, anotação e feitiço podem ser desfeitas.</li><li>Recarregar a página reabre a mesma ficha e aba. O botão Voltar do navegador volta para a aba anterior.</li></ul>
+<h3>Criação</h3><ul><li>Os atributos são rolados à parte e digitados. Nível, PV máximo, acerto, salvaguardas, CA, idiomas, capangas e classe de peso são calculados.</li><li>O kit da classe usa os 15 ciclos de prata. O troco vai para o primeiro saco. O Símbolo Sagrado do Devoto e os 2 pergaminhos do Arcanista são itens de classe, fora do orçamento.</li><li>O nível sobe sozinho quando a experiência alcança a tabela, e o PV atual recebe o aumento do PV máximo. O campo <b>+ XP</b> soma ao total.</li><li>As salvaguardas mostradas já incluem a penalidade do Desgaste. As armas no Corpo mostram o acerto, sem os bônus positivos quando não há proficiência.</li></ul>
+<h3>Inventário</h3><ul><li><b>Corpo</b> não tem limite: armas, armaduras, anéis, colares, e também mochilas, sacos e bolsas de cinto vestidos.</li><li>Cada contêiner mostra quanto ocupa da capacidade. Um contêiner especial pode ter redução de peso: o conteúdo pesa menos para quem o carrega.</li><li>Mude o <b>Local</b> de um item para movê-lo. No celular, o local e o peso por unidade ficam no lápis. Com mais de uma unidade, a ficha pergunta quantas mover. Contêineres levam o conteúdo junto.</li><li><b>Guardado fora</b> serve para o baú do ponto seguro, um quarto ou o banco. Nada ali conta no peso.</li><li>A classe de peso (A a D) vem da soma de tudo o que está com o personagem e define o movimento. Desgaste de 5 ou mais reduz a classe.</li><li>O lápis abre a edição do item: capacidade, redução de peso, CA, moeda e notas. <b>Copiar código do item</b> gera um texto para colar na ficha de outro jogador com <b>Colar código</b>.</li></ul>
+<h3>Magia</h3><ul><li>A aba aparece para Arcanista e Devoto. Decorar respeita os Espaços de Feitiço e o nível máximo. Conjurar remove o feitiço da mente.</li><li>O nome de cada feitiço abre a página dele no Notion. <b>Novo ritual</b> zera os usos do Feitiço Representante.</li></ul>
 <h3>Anotações</h3><ul><li>Cada anotação abre e fecha. Use Editar para escrever em Markdown.</li></ul>`}
 
 function tabs(){return [['p','Personagem'],['i','Inventário'],...(C().mg?[['g','Magia']]:[]),['c','Classe'],['n','Anotações']]}
+const VIEWS={p:pers,i:inv,g:mag,c:cls,n:notes};
 function render(){
- if(!S){document.body.classList.add('hm');$('#tb').innerHTML='';$('#cn').textContent='';$('#m').innerHTML=home();return}
+ if(!S){document.body.classList.add('hm');$('#tb').innerHTML='';$('#cn').textContent='';$('#m').innerHTML=home();sync();return}
  document.body.classList.remove('hm');const T=tabs();if(!T.some(t=>t[0]==tab))tab='p';
- $('#tb').innerHTML=T.map(([k,n])=>`<button data-a=tb data-v=${k} aria-selected=${tab==k}>${n}</button>`).join('');
- const D=derive();$('#m').innerHTML=({p:pers,i:inv,g:mag,c:cls,n:notes})[tab](D);out(D);if(!FSZ)$$('main textarea').forEach(grow)}
+ $('#tb').innerHTML=T.map(([k,n])=>`<button data-a=tb data-v=${k}${tab==k?' aria-current=page':''}>${n}</button>`).join('');
+ lv0=lvl();const D=derive();$('#m').innerHTML=VIEWS[tab](D);out(D);if(!FSZ)$$('main textarea').forEach(grow);sync()}
 /** Atualiza os valores calculados sem redesenhar (mantém o foco ao digitar). */
 function out(D=derive()){$$('[data-o]').forEach(e=>e.textContent=D[e.dataset.o]??'');$$('[data-p]').forEach(e=>e.style.setProperty('--p',(D[e.dataset.p]||0)+'%'));
  $$('[data-w]').forEach(e=>e.classList.toggle('bad',!!D[e.dataset.w]));$$('[data-ov]').forEach(e=>e.classList.toggle('over',!!D['lw_'+e.dataset.ov]));$('#cn').textContent=S.no||'Sem nome'}
 
 // ===== Persistência =====
-function mark(){dirty=true;$('#st').textContent='Não salvo';if(auto){clearTimeout(sid);sid=setTimeout(save,700)}}
+/** Marca uma alteração e guarda o estado anterior para desfazer. Digitação com menos de 1 s entre teclas vira um passo só. f força um passo novo. */
+function mark(f){const j=JSON.stringify(S),n=Date.now();if(j!=prev){if(f||n-ht>1e3){H.push(prev);if(H.length>50)H.shift()}prev=j;ht=f?0:n}
+ dirty=true;if(auto){clearTimeout(sid);sid=setTimeout(save,700)}else{clearTimeout(tid);$('#st').textContent='Não salvo'}}
+function undo(){if(!H.length)return ok('Nada para desfazer');S=JSON.parse(prev=H.pop());ne=-1;mark();render();ok('Desfeito')}
 function ok(m){$('#st').textContent=m;clearTimeout(tid);tid=setTimeout(()=>$('#st').textContent='',2500)}
-function save(){if(!S)return;try{const F=lsRead();S.ts=Date.now();F[S.id]=S;localStorage.setItem(LS,JSON.stringify(F));dirty=false;ok('Salvo neste navegador')}catch(e){ok('Navegador sem armazenamento: exporte o arquivo')}}
-function openS(s){S=s;tab='p';ne=-1;render();window.scrollTo(0,0)}
-function dl(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));
- a.download=(String(S.no).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w-]+/g,'_')||'personagem')+'.json';a.click();URL.revokeObjectURL(a.href);dirty=false;ok('Arquivo exportado')}
+/** f: salvamento pedido pelo jogador, que mostra confirmação. O automático fica em silêncio. */
+function save(f){if(!S)return;try{const F=lsRead();S.ts=Date.now();F[S.id]=S;localStorage.setItem(LS,JSON.stringify(F));dirty=false;if(f)ok('Salvo neste navegador')}catch(e){ok('Navegador sem armazenamento: exporte o arquivo')}}
+function openS(s,t=tab){S=s;H=[];prev=JSON.stringify(s);ht=0;tab=t;ne=-1;render()}
+const ago=t=>{const d=Math.floor((Date.now()-t)/864e5);return !t?'nunca exportada':d<1?'exportada hoje':`exportada há ${d} dia${d>1?'s':''}`};
+const stale=s=>!s.bk||Date.now()-s.bk>7*864e5;
+/** Ficha e aba na URL (#id/aba): recarregar reabre a ficha e Voltar troca de aba. */
+function sync(){const h=S?'#'+S.id+'/'+tab:'';if(location.hash!=h)try{history.pushState(null,'',h||location.pathname+location.search)}catch(e){}}
+function route(){const [id,t]=location.hash.slice(1).split('/');if(S&&id==S.id){tab=t||'p';ne=-1;render();return}
+ if(dirty&&auto)save(); // shortcut: com o salvamento automático desligado, Voltar descarta mudanças não salvas. Perguntar exigiria desfazer a navegação.
+ const s=id&&fix(lsRead()[id]);if(s)openS(s,t||'p');else{S=null;render()}}
+/** Diálogo no lugar de prompt e confirm, que iframes com sandbox bloqueiam. v != null mostra um campo. Resolve com o texto, o número do botão (1, 2…) ou null. */
+function ask(m,v,...b){const d=$('#ak'),i=$('#aki');$('#akm').textContent=m;i.hidden=v==null;i.type=typeof v=='number'?'number':'text';i.value=v??'';
+ $('#akb').innerHTML=(b.length?b:['OK']).map((t,k,l)=>`<button value=${k+1}${k==l.length-1?' class=pri':''}>${esc(t)}</button>`).join('');d.returnValue='';d.showModal();if(v!=null)try{i.select()}catch(e){}
+ return new Promise(r=>d.addEventListener('close',()=>{const k=+d.returnValue;r(!k?null:v!=null?i.value:k)},{once:true}))}
+/** Ao mudar de nível pela XP, o PV atual acompanha a diferença do PV máximo. */
+function lvup(){const L=lvl(),p=C().pv,d=p[L-1]-p[lv0-1];if(L==lv0)return;S.pv=num(S.pv)+d;ok(`Nível ${L} · PV ${sg(d)}`);lv0=L}
+function dl(){S.bk=Date.now();const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));
+ a.download=(String(S.no).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w-]+/g,'_')||'personagem')+'.json';a.click();URL.revokeObjectURL(a.href);save();dirty=false;ok('Arquivo exportado')}
 const enc=o=>btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(o))));
 const dec=s=>JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(s),c=>c.charCodeAt(0))));
 function setth(v){document.documentElement.dataset.t=v||'';$('meta[name=color-scheme]').content=v||'light dark';try{v?localStorage.setItem('av-t',v):localStorage.removeItem('av-t')}catch(e){}
@@ -642,35 +707,39 @@ function place(x){if(!isC(x)){const y=S.it.find(y=>y!==x&&y.c==x.c&&!isC(y)&&y.n
 function move(x,to,n){if(isC(x)||n>=x.q){x.c=to;place(x)}else if(n>0){x.q-=n;place({...x,i:uid(),q:n,c:to})}}
 function addItem(n,q,w,to){const c=CAT.get(n),b=fi({n,q,w:w===''?c?.w:w,c:to,t:c?.t,d:c?.d,...(c?.x||{})});
  if(isC(b))for(let k=0;k<q;k++)S.it.push({...b,i:uid()});else place(b)}
+/** Move x para "to". Numa pilha, pergunta quantas unidades. @returns {Promise<boolean>} se moveu */
+async function relocate(x,to){let n=x.q;if(!isC(x)&&x.q>1){const r=await ask(`Quantos de "${x.n}" mover? (1 a ${x.q})`,x.q,'Mover');n=Math.min(x.q,Math.floor(num(r)));if(r==null||n<1)return false}move(x,to,n);return true}
 
 // ===== Eventos =====
-document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,v=t.dataset.v,R=()=>{mark();render()};
+document.addEventListener('click',async e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,v=t.dataset.v,R=()=>{mark(1);render()};
  if(a=='tb'){tab=v;ne=-1;render();window.scrollTo(0,0);return}
  if(a=='th'){setth(v);return}
- if(a=='op'||a=='hp'){const d=$('#'+a);d.showModal();d.scrollTop=0;return}
+ if(a=='op'||a=='hp'){if(S)$('[data-a=dl]').textContent='Exportar ficha (.json) · '+ago(S.bk);const d=$('#'+a);d.showModal();d.scrollTop=0;return}
  if(a=='cx'){t.closest('dialog').close();return}
- if(a=='au'){auto=!auto;try{localStorage.setItem(AK,auto?'1':'0')}catch(x){}t.textContent='Salvamento automático: '+(auto?'ligado':'desligado');if(auto&&S)save();return}
- if(a=='sv'){save();return}
+ if(a=='au'){auto=!auto;try{localStorage.setItem(AK,auto?'1':'0')}catch(x){}t.textContent='Salvamento automático: '+(auto?'ligado':'desligado');if(auto&&S)save(1);return}
+ if(a=='sv'){save(1);return}
  if(a=='dl'){dl();return}
  if(a=='ld'){$('#fi').click();return}
- if(a=='hm'){if(dirty&&auto)save();if(dirty&&!confirm('Há alterações não salvas. Sair mesmo assim?'))return;$('#op').close();S=null;render();return}
- if(a=='xs'){if(confirm(`Excluir "${S.no||'Sem nome'}" deste navegador? Exporte antes se quiser guardar uma cópia.`)){const F=lsRead();delete F[S.id];try{localStorage.setItem(LS,JSON.stringify(F))}catch(x){}$('#op').close();S=null;dirty=false;render();ok('Ficha excluída')}return}
+ if(a=='hm'){if(dirty&&auto)save();if(dirty&&!await ask('Há alterações não salvas. Sair mesmo assim?',null,'Sair'))return;$('#op').close();S=null;render();return}
+ if(a=='xs'){if(await ask(`Excluir "${S.no||'Sem nome'}" deste navegador? Exporte antes se quiser guardar uma cópia.`,null,'Excluir')){const F=lsRead();delete F[S.id];try{localStorage.setItem(LS,JSON.stringify(F))}catch(x){}$('#op').close();S=null;dirty=false;render();ok('Ficha excluída')}return}
  if(a=='nw'){$('#nf').reset();kitPrev();$('#nw').showModal();return}
- if(a=='oh'){const s=fix(lsRead()[v]);if(s)openS(s);return}
+ if(a=='oh'){const s=fix(lsRead()[v]);if(s){openS(s,'p');window.scrollTo(0,0)}return}
  if(!S)return;
+ if(a=='un'){undo();return}
  if(a=='ie'){editItem(byId(v));return}
- if(a=='id'){const x=byId(v);if(!x)return;const k=kids(x.i);if(!confirm(k.length?`Excluir "${x.n}"? O conteúdo (${k.length} item(ns)) vai para o local onde ele está.`:`Excluir "${x.n}"?`))return;
-  k.forEach(y=>move(y,x.c,y.q));S.it=S.it.filter(y=>y!==x);R();return}
+ if(a=='id'){const x=byId(v);if(!x)return;const k=kids(x.i);
+  k.forEach(y=>move(y,x.c,y.q));S.it=S.it.filter(y=>y!==x);R();ok(k.length?'Excluído, conteúdo mantido · ↶ desfaz':'Excluído · ↶ desfaz');return}
  if(a=='nl'){const x=fi({n:'Novo local',q:1,w:0,c:'fora',cap:0,d:'Baú, quarto, banco…'});S.it.push(x);R();editItem(x);return}
- if(a=='ic'){const x=byId(eid);if(!x)return;const sub=[x,...S.it.filter(y=>inside(y,x))];navigator.clipboard?.writeText(enc(sub)).then(()=>ok('Código do item copiado'),()=>prompt('Copie o código',enc(sub)))??prompt('Copie o código',enc(sub));return}
- if(a=='ip'){const s=prompt('Cole o código do item');if(!s)return;try{const arr=dec(s.trim());if(!Array.isArray(arr)||!arr.length)throw 0;const map={};arr.forEach(x=>map[x.i]=uid());
-  const to=$('#adf').c.value;arr.forEach((x,k)=>{const y=fi({...x,i:map[x.i],c:k?map[x.c]||to:to});k||isC(y)?S.it.push(y):place(y)});R();ok('Item adicionado')}catch(x){alert('Código de item inválido')}return}
+ if(a=='ic'){const x=byId(eid);if(!x)return;const sub=[x,...S.it.filter(y=>inside(y,x))];const c=enc(sub),m=()=>ask('Copie o código',c);navigator.clipboard?.writeText(c).then(()=>ok('Código do item copiado'),m)??m();return}
+ if(a=='ip'){const s=await ask('Cole o código do item','','Adicionar');if(!s)return;try{const arr=dec(s.trim());if(!Array.isArray(arr)||!arr.length)throw 0;const map={};arr.forEach(x=>map[x.i]=uid());
+  const to=$('#adf').c.value;arr.forEach((x,k)=>{const y=fi({...x,i:map[x.i],c:k?map[x.c]||to:to});k||isC(y)?S.it.push(y):place(y)});R();ok('Item adicionado')}catch(x){ok('Código de item inválido')}return}
  if(a=='fc'||a=='fx'){const f=S.fe.splice(+v,1)[0];R();if(a=='fc')ok('Conjurado: '+f.n);return}
  if(a=='ru'){S.ru=+v<S.ru?+v:+v+1;R();return}
+ if(a=='rr'){S.ru=0;R();return}
  if(a=='na'){S.nt.push({t:'Nova anotação',b:'',o:true});ne=S.nt.length-1;R();return}
  if(a=='ne'){ne=ne==+v?-1:+v;S.nt[+v].o=true;render();return}
  if(a=='nu'||a=='nd'){const k=+v,n=k+(a=='nu'?-1:1);if(n<0||n>=S.nt.length)return;S.nt.splice(n,0,S.nt.splice(k,1)[0]);ne=-1;R();return}
- if(a=='nx'){if(confirm('Excluir esta anotação?')){S.nt.splice(+v,1);ne=-1;R()}return}});
+ if(a=='nx'){S.nt.splice(+v,1);ne=-1;R();ok('Anotação excluída · ↶ desfaz');return}});
 
 /** Escreve um valor no caminho "a.b" da ficha. */
 function setk(p,v){const k=p.split('.'),o=k.slice(0,-1).reduce((a,x)=>a[x],S);o[k.at(-1)]=v}
@@ -680,22 +749,23 @@ document.addEventListener('input',e=>{const t=e.target,d=t.dataset;if(!S||!t.clo
  else if(d.nt!=null)S.nt[+d.nt][d.f]=t.value;
  else return;mark();out();if(t.tagName=='TEXTAREA'&&!FSZ)grow(t)});
 function grow(t){t.style.height='auto';t.style.height=t.scrollHeight+'px'}
-document.addEventListener('change',e=>{const t=e.target,d=t.dataset;if(!S)return;
- if(d.re!=null){if(d.k=='cl')S.fe=S.fe.filter(()=>CL[S.cl].mg);render();return}
- if(d.mv){const x=byId(d.mv);if(!x)return;let n=x.q;
-  if(!isC(x)&&x.q>1){const r=prompt(`Quantos de "${x.n}" mover? (1 a ${x.q})`,x.q);n=Math.min(x.q,Math.floor(num(r)));if(!r||n<1){render();return}}
-  move(x,t.value,n);mark();render()}
- if(d.it&&d.f=='q'&&!num(t.value)){const x=byId(d.it);if(x&&confirm(`"${x.n}" chegou a 0. Remover do inventário?`)){S.it=S.it.filter(y=>y!==x);mark();render()}}});
+document.addEventListener('change',async e=>{const t=e.target,d=t.dataset;if(!S)return;
+ // feitiços decorados e usos pertencem à classe: trocar a classe limpa os dois (↶ recupera)
+ if(d.re!=null){if(d.k=='cl'&&S.fe.length+S.ru){S.fe=[];S.ru=0;mark();ok('Feitiços limpos pela troca de classe · ↶ desfaz')}render();return}
+ if(d.k=='xp'||d.ax!=null){if(d.ax!=null)S.xp=Math.max(0,num(S.xp)+num(t.value));lvup();mark(1);render();return}
+ if(d.mv){const x=byId(d.mv);if(x&&await relocate(x,t.value))mark(1);render();return}
+ if(d.it&&d.f=='q'&&!num(t.value)){const x=byId(d.it);if(x&&await ask(`"${x.n}" chegou a 0. Remover do inventário?`,null,'Remover')){S.it=S.it.filter(y=>y!==x);mark(1);render()}}});
 document.addEventListener('toggle',e=>{const k=e.target.dataset?.no;if(S&&k!=null&&S.nt[k])S.nt[k].o=e.target.open},true);
-document.addEventListener('submit',e=>{const f=e.target;e.preventDefault();
- if(f.id=='adf'){const fd=new FormData(f),n=String(fd.get('n')).trim(),q=Math.max(1,Math.floor(num(fd.get('q'))));if(!n)return;addItem(n,q,fd.get('w')===''?'':num(fd.get('w')),fd.get('c'));mark();render();ok('Adicionado: '+n);return}
- if(f.id=='fef'){const [l,...n]=String(new FormData(f).get('s')).split('|'),L=+l,D=derive();if(!L)return;
-  if(D.edu+L>D.edf){alert(`Faltam espaços: ${D.edf-D.edu} livre(s), o feitiço ocupa ${L}.`);return}S.fe.push({n:n.join('|'),l:L});mark();render();return}
- if(f.id=='nf'){S=newSheet(new FormData(f));$('#nw').close();tab='p';ne=-1;save();render();window.scrollTo(0,0);return}
+document.addEventListener('submit',async e=>{const f=e.target;if(f.method=='dialog')return;e.preventDefault();
+ if(f.id=='adf'){const fd=new FormData(f),n=String(fd.get('n')).trim(),q=Math.max(1,Math.floor(num(fd.get('q'))));if(!n)return;addItem(n,q,fd.get('w')===''?'':num(fd.get('w')),fd.get('c'));mark(1);render();ok('Adicionado: '+n);return}
+ // níveis sem espaço livre já vêm desabilitados no select
+ if(f.id=='fef'){const [l,...n]=String(new FormData(f).get('s')).split('|'),L=+l,D=derive();if(!L||D.edu+L>D.edf)return;S.fe.push({n:n.join('|'),l:L});mark(1);render();return}
+ if(f.id=='nf'){$('#nw').close();openS(newSheet(new FormData(f)),'p');save();window.scrollTo(0,0);return}
  if(f.id=='ief'){const x=byId(eid);if(!x)return;const fd=new FormData(f),y=fi({...Object.fromEntries(fd),i:x.i,c:x.c,t:x.t,cap:fd.get('ct')?fd.get('cap')||0:null,z:!!fd.get('z')});
-  if(!isC(y)&&kids(x.i).length){alert('Esvazie o contêiner antes de desmarcar.');return}Object.keys(x).forEach(k=>delete x[k]);Object.assign(x,y);$('#ie').close();mark();render()}});
+  if(!isC(y)&&kids(x.i).length){$('#iew').textContent='Esvazie o contêiner antes de desmarcar.';return}Object.keys(x).forEach(k=>delete x[k]);Object.assign(x,y);$('#ie').close();
+  const to=fd.get('c');if(to&&to!=x.c)await relocate(x,to);mark(1);render()}});
 document.addEventListener('change',e=>{if(e.target.name=='n'&&e.target.form?.id=='adf'){const c=CAT.get(e.target.value.trim());if(c)e.target.form.w.value=c.w}});
-function editItem(x){if(!x)return;eid=x.i;const f=$('#ief');f.reset();$('#iet').textContent=x.n;
+function editItem(x){if(!x)return;eid=x.i;const f=$('#ief');f.reset();$('#iet').textContent=x.n;$('#iew').textContent='';f.c.innerHTML=locOpts(x);
  Object.entries({n:x.n,q:x.q,w:x.w,m:x.m||'',ca:x.ca||'',sh:x.sh||'',cap:x.cap??'',r:x.r||'',d:x.d}).forEach(([k,v])=>f[k].value=v);f.ct.checked=isC(x);f.z.checked=!!x.z;f.q.disabled=isC(x);$('#ie').showModal()}
 
 // ===== Formulário de criação =====
@@ -704,12 +774,23 @@ function kitPrev(){const cl=new FormData($('#nf')).get('cl'),k=mkKit(cl),c=CL[cl
 <p class=note>Gasto ${k.cost} cc · troco ${Math.floor(k.tr/10)} cp e ${k.tr%10} cc · cerca de ${w} c (classe A até ${c.pc[0]} c)${cl=='arcanista'?' · mais os 2 pergaminhos escolhidos':''}.</p>`}
 $('#ncl').innerHTML=Object.entries(CL).map(([k,c],i)=>`<label><input type=radio name=cl value=${k}${i?'':' checked'} required><b>${c.n}</b><small>${c.d}</small></label>`).join('');
 $('#nat').innerHTML=AT.map(([k,a,n])=>`<label class=f><span class=lb title="${n}">${a} *</span><input name=a_${k} type=number min=3 max=18 step=1 inputmode=numeric required aria-label="${n}"></label>`).join('');
-$$('.sp1').forEach((s,i)=>s.innerHTML=SP.a[0].map((n,j)=>`<option${j==i*7?' selected':''}>${esc(n)}</option>`).join(''));
+$$('.sp1').forEach((s,i)=>s.innerHTML=SP.a[0].map((n,j)=>`<option${j==i*6?' selected':''}>${esc(n)}</option>`).join(''));
 $('#nf').addEventListener('change',e=>{if(e.target.name=='cl')kitPrev()});
 $('#cat').innerHTML=CATR.map(([n,t,p,w])=>`<option value="${esc(n)}">${TY[t]} · ${p} cc · ${w} c</option>`).join('');
-$('#fi').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
- f.text().then(x=>{const s=fix(JSON.parse(x));if(!s)throw 0;$('#op').close();openS(s);save();ok('Ficha carregada')}).catch(()=>alert('Arquivo de ficha inválido'))});
+$('#fi').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;let s;
+ try{s=fix(JSON.parse(await f.text()))}catch(x){}if(!s)return ok('Arquivo de ficha inválido');
+ // a mesma ficha já existe aqui e foi salva depois do arquivo: não sobrescrever sem perguntar
+ const cur=fix(lsRead()[s.id]);if(cur&&cur.ts>s.ts){const r=await ask(`"${cur.no||'Sem nome'}" neste navegador foi salva depois deste arquivo.`,null,'Importar como cópia','Substituir a do navegador');if(!r)return;if(r==1){s.id=uid();s.no+=' (cópia)'}}
+ $('#op').close();openS(s,'p');save();window.scrollTo(0,0);ok('Ficha carregada')});
 addEventListener('beforeunload',e=>{if(dirty)e.preventDefault()});
+addEventListener('popstate',route);
+addEventListener('keydown',e=>{if(S&&(e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()=='z'&&!e.target.matches('input:not([type=checkbox]),textarea')&&!$('dialog[open]')){e.preventDefault();undo()}});
+// outra aba salvou esta ficha: recarrega se aqui não há mudança pendente, senão pergunta
+addEventListener('storage',async e=>{if(e.key!=LS||!S||$('#ak').open)return;const s=fix(lsRead()[S.id]);if(!s||s.ts<=S.ts)return;
+ if(!dirty||await ask('Esta ficha foi alterada em outra aba. Carregar a versão de lá e descartar as mudanças daqui?',null,'Carregar')){openS(s);ok('Atualizada pela outra aba')}});
+// impressão sai com todas as abas
+addEventListener('beforeprint',()=>{if(!S)return;const D=derive();$('#m').innerHTML=tabs().map(([k])=>`<div class=pg>${VIEWS[k](D)}</div>`).join('');out(D)});
+addEventListener('afterprint',()=>S&&render());
 // closedby=any fecha pelo fundo. Caminho para navegadores sem closedby (Safari).
 if(!('closedBy' in HTMLDialogElement.prototype))$$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target!=d)return;const r=d.getBoundingClientRect();
  if(e.clientY<r.top||e.clientY>r.bottom||e.clientX<r.left||e.clientX>r.right)d.close()}));
@@ -735,8 +816,17 @@ if(location.hash=='#test'){const a=(c,m)=>console[c?'log':'error']((c?'ok ':'FAL
  a(md('<img src=x> [x](javascript:y)')=='<p>&#60;img src=x&#62; x</p>','markdown escapa HTML e bloqueia javascript:');
  a(dec(enc([{n:'Espada á'}]))[0].n=='Espada á','código de item ida e volta');
  {const f=i=>{const d=new FormData();d.set('cl','lutador');d.set('a_in',i);return newSheet(d)};a(f(6).li=='Arconteano'&&f(6).se=='Mithric (Arconteano)'&&f(5).se=='','ficha nova: Arconteano sempre, Mithric com INT 6+')}
- a(fix({cl:'ladino',la:'Comum'}).li=='Comum'&&fix({cl:'ladino',ra:'Elfo'}).ra===undefined,'ficha antiga: idiomas viram línguas, raça descartada');S=null}
-render();
+ a(fix({cl:'ladino',la:'Comum'}).li=='Comum'&&fix({cl:'ladino',ra:'Elfo'}).ra===undefined,'ficha antiga: idiomas viram línguas, raça descartada');
+ S=fix({cl:'devoto',at:{fo:16},dg:[2,1,0],it:[{i:'e',n:'Espada',w:25},{i:'f',n:'Funda',w:2}]});D=derive();
+ a(D.wa_e=='corpo a corpo +0 · sem proficiência'&&D.wa_f=='distância +0 (3m–50m)','armas: sem proficiência perde os bônus positivos ('+D.wa_e+' | '+D.wa_f+')');
+ a(D.sv0==CL.devoto.sv[0][0]+1&&D.svd!='','desgaste 3 soma 1 às salvaguardas');
+ a(['a','d'].every(g=>{const n=SP[g].flat();return n.every(x=>/^[0-9a-f]{18}$/.test(SPU[g][x]))&&Object.keys(SPU[g]).length==n.length}),'todo feitiço tem página no Notion');
+ a(fix({cl:'arcanista',fe:[{n:'Sono',l:1},{n:'Inventado',l:2}]}).fe.map(f=>f.l).join()=='3,2','nível do feitiço decorado vem da lista atual');
+ a(fix({cl:'ladino',id:'a"b',it:[{i:'x"><i>'}]}).id=='ab'&&fix({cl:'ladino',it:[{i:'x"><i>'}]}).it[0].i=='xi','ids de arquivo sem caracteres de HTML');
+ S=fix({cl:'lutador',pv:3});lv0=1;S.xp=6000;lvup();a(S.pv==5&&lv0==3,'subir de nível soma a diferença de PV');
+ {const au=auto;auto=false;S=fix({cl:'ladino',no:'A'});H=[];prev=JSON.stringify(S);ht=0;S.no='B';mark(1);S.no='C';mark(1);undo();const b=S.no;undo();a(b=='B'&&S.no=='A','desfazer volta um passo por vez');auto=au;dirty=false}
+ S=null}
+route();
 </script>
 </body>
 </html>
