@@ -312,6 +312,7 @@ legend{font-family:var(--sf);font-weight:600;padding-right:8px}
 /* mesa: até dois blocos por linha, um por linha no celular */
 .mz{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
 @media(max-width:760px){.mz{grid-template-columns:minmax(0,1fr)}}
+.mz .zo{opacity:.55}
 .zi{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:2px 0;border-top:1px solid var(--ln);font-variant-numeric:tabular-nums}
 #kp ul{list-style:none;padding:0}
 .fa{display:flex;justify-content:end;gap:8px;margin-top:14px}
@@ -434,9 +435,12 @@ const rnd=n=>Math.round(n*100)/100;
 const fmt=n=>rnd(n).toLocaleString('pt-BR');
 const sg=n=>(n<0?'−':'+')+Math.abs(n);
 /** Mesa: URL do Realtime Database do Firebase, como aparece no topo da aba Data do console (ex.: https://ardenvul-default-rtdb.firebaseio.com).
- * Vazia, a opção "Entrar numa mesa" não aparece. Regras do banco (aba Rules): quem sabe o código da mesa lê e grava nela. Ninguém lista as mesas.
- * {"rules":{"mesas":{"$mesa":{".read":"$mesa.length >= 6","$ficha":{".write":"$mesa.length >= 6",".validate":"newData.hasChildren(['g', 'ts'])"}}}}} */
-const FB='https://ficha-arden-vul-server-default-rtdb.firebaseio.com/';
+ * Vazia, a opção "Entrar numa mesa" não aparece. Regras do banco (aba Rules): quem sabe o código da mesa lê e grava nela. Só se listam e apagam
+ * mesas inteiras paradas há 5 horas (18000000 ms), pela limpeza em mzGC().
+ * {"rules":{"mesas":{".indexOn":"t",".read":"query.orderByChild == 't' && query.endAt <= now - 18000000","$mesa":{".read":"$mesa.length >= 6",
+ *  ".write":"$mesa.length >= 6 && !newData.exists() && (!data.child('t').exists() || data.child('t').val() <= now - 18000000)",
+ *  "t":{".write":"$mesa.length >= 6",".validate":"newData.val() == now"},"$ficha":{".write":"$mesa.length >= 6",".validate":"newData.hasChildren(['g', 'ts'])"}}}}} */
+const FB='https://ficha-arden-vul-server-default-rtdb.firebaseio.com';
 const LS='av-fichas',AK='av-a',FSZ=CSS.supports('field-sizing','content');
 const E='cubic-bezier(.23,1,.32,1)',XE='cubic-bezier(.4,0,1,1)',RM=matchMedia('(prefers-reduced-motion: reduce)');
 /** Número de um texto exibido ("−1", "1.234", "3/5"), para saber se o valor subiu ou desceu. */
@@ -851,7 +855,7 @@ function help(){return `<div class=dh><b>Como usar a ficha</b><button class="ic 
 <h3>Inventário</h3><ul><li><b>Corpo</b> guarda armas, armaduras, anéis, colares, e também mochilas, sacos e bolsas de cinto vestidos. O limite é o peso máximo da classe de peso D da classe.</li><li>Cada contêiner mostra quanto ocupa da capacidade. Um contêiner especial pode ter redução de peso: o conteúdo pesa menos para quem o carrega.</li><li>Toque no nome de um item para <b>Editar</b>, <b>Renomear</b>, <b>Mover para…</b> ou <b>Excluir</b>. Nos quadros de contêiner, o mesmo menu fica no <b>&#8943;</b>, inclusive nos guardados fora, para trazê-los de volta. Com mais de uma unidade, a ficha pergunta quantas mover. Contêineres levam o conteúdo junto.</li><li>A seta ao lado do nome mostra a descrição do item.</li><li><b>Guardado fora</b> serve para o baú do ponto seguro, um quarto ou o banco. Nada ali conta no peso.</li><li>A classe de peso (A a D) vem da soma de tudo o que está com o personagem e define o movimento. Desgaste de 5 ou mais reduz a classe.</li><li><b>Comprar</b> adiciona o item e desconta o preço un. (cc) vezes a quantidade das moedas carregadas, no valor exato quando dá. Se faltar troco, usa uma moeda maior e o troco volta em ouro, prata e cobre no mesmo contêiner dela. O preço vem do comércio e pode ser alterado. <b>Adicionar</b> ignora o preço. Moedas do mesmo tipo no mesmo lugar viram uma pilha só.</li><li>Armas de disparo no Corpo mostram a munição carregada: pedras, flechas ou virotes.</li><li><b>Editar</b> abre a edição do item: peso por unidade, local, capacidade, redução de peso, CA, moeda, tipo-base e notas. O tipo-base mantém uma arma, munição ou armadura renomeada (ex.: Espada do avô) na proficiência, no acerto e na contagem de munição. <b>Copiar código do item</b> gera um texto para colar na ficha de outro jogador com <b>Colar código</b>.</li></ul>
 <h3>Magia</h3><ul><li>A aba aparece para Arcanista e Devoto. Lutador, Andarilho e Ladino podem ligá-la em <b>Opções</b> e definir lista arcana e/ou divina, espaços de feitiço, nível máximo e divindade. O Feitiço Representante é só do Devoto.</li><li> Decorar respeita os Espaços de Feitiço e o nível máximo. Conjurar remove o feitiço da mente.</li><li><b>Novo feitiço</b>, no fim de cada lista, cria um feitiço desta ficha. Ele aparece no nível escolhido e pode ser decorado. O ✕ ao lado do nome o exclui.</li><li>O nome de cada feitiço abre a página dele no Notion. <b>Novo ritual</b> zera os usos do Feitiço Representante.</li></ul>
 <h3>Anotações</h3><ul><li>Cada anotação abre e fecha. Use Editar para escrever em Markdown.</li></ul>
-<h3>Mesa</h3><ul><li><b>Entrar numa mesa</b>, em Opções, liga esta ficha a um código. Quem cria a mesa mantém o código sugerido e passa para o grupo. Os outros entram com o mesmo código.</li><li>A aba <b>Mesa</b> mostra as fichas dos outros jogadores: PV, CA, Desgaste, Carga, peso carregado e os itens no corpo, por contêiner. Elas se atualizam sozinhas.</li><li>A sua ficha é enviada a cada alteração, sem as anotações. Ao fechar a página, os outros continuam vendo o último estado, com o horário. <b>Sair da mesa</b> apaga a sua ficha da mesa.</li><li>Quem tem o código vê a mesa. Não use dados pessoais nos nomes.</li></ul>`}
+<h3>Mesa</h3><ul><li><b>Entrar numa mesa</b>, em Opções, liga esta ficha a um código. Quem cria a mesa mantém o código sugerido e passa para o grupo. Os outros entram com o mesmo código.</li><li>A aba <b>Mesa</b> mostra as fichas dos outros jogadores: PV, CA, Desgaste, Carga, peso carregado e os itens no corpo, por contêiner. Elas se atualizam sozinhas.</li><li>A sua ficha é enviada a cada alteração e uma vez por minuto, sem as anotações. Ao fechar a página, os outros continuam vendo o último estado, esmaecido e com "offline desde" e o horário. <b>Sair da mesa</b> apaga a sua ficha da mesa.</li><li>Uma ficha sem sinal há 5 horas é apagada da mesa. Uma mesa inteira parada há 5 horas também. Entrar de novo com o mesmo código recria a mesa.</li><li>Quem tem o código vê a mesa. Não use dados pessoais nos nomes.</li></ul>`}
 
 function tabs(){return [['p','Personagem'],['i','Inventário'],...(C().mg||S.mx.on?[['g','Magia']]:[]),['c','Classe'],['n','Anotações'],...(mz()?[['z','Mesa']]:[])]}
 const VIEWS={p:pers,i:inv,g:mag,c:cls,n:notes,z:mesa};
@@ -960,7 +964,8 @@ async function relocate(x,to){let n=x.q;if(!isC(x)&&x.q>1){const r=await ask(`Qu
 
 // ===== Mesa: fichas dos outros jogadores pelo Firebase Realtime Database =====
 // Sem SDK: a API REST aceita EventSource para receber mudanças e POST com x-http-method-override para gravar (requisição simples, sem preflight de CORS).
-// Cada ficha grava só o próprio resumo em mesas/CÓDIGO/ID_DA_FICHA. O código da mesa fica por ficha neste navegador (av-mz).
+// Cada ficha grava só o próprio resumo em mesas/CÓDIGO/ID_DA_FICHA e o horário da mesa em mesas/CÓDIGO/t. O código da mesa fica por ficha neste navegador (av-mz).
+// Aberta, a ficha reenvia o resumo a cada minuto: sem sinal há 2,5 min, o bloco aparece offline. Sem sinal há 5 h, a ficha ou a mesa é apagada (mzGC).
 let MZ={},MZS={},es=null,mzT,mzJ='';try{MZ=JSON.parse(localStorage.getItem('av-mz'))||{}}catch(e){}
 const mzSave=()=>{try{localStorage.setItem('av-mz',JSON.stringify(MZ))}catch(e){}};
 const mz=()=>FB&&S&&MZ[S.id];
@@ -973,9 +978,20 @@ function resumo(D){const c=C(),k=D.wk;
   nx:k<0?'acima do máximo de '+fmt(c.pc[3])+' c':k<3?'ABCD'[k+1]+' acima de '+fmt(c.pc[k])+' c':'imóvel acima de '+fmt(c.pc[3])+' c',
   g:[['corpo','Corpo',D.pt+' / '+fmt(c.pc[3])+' c'],...tree('corpo').map(({x,path})=>[x.i,[...path.slice(1),x.n].join(' › '),fmt(load(x.i))+(x.cap?' / '+fmt(x.cap):'')+' c'])]
    .map(([i,n,l])=>({n,l,it:kids(i).filter(x=>!isC(x)).map(x=>({n:x.n,q:x.q}))}))}}
-/** Envia o resumo 700 ms depois da última alteração, só se mudou. Chamado pelo out(), que roda a cada mudança na ficha. */
-function mzPub(){clearTimeout(mzT);mzT=setTimeout(()=>{const z=mz();if(!z)return;const o=resumo(derive()),j=JSON.stringify(o);if(j==mzJ)return;mzJ=j;
- fetch(mzU(z+'/'+S.id,'PUT'),{method:'POST',body:JSON.stringify({...o,ts:{'.sv':'timestamp'}})}).then(r=>{if(!r.ok)throw 0}).catch(()=>{mzJ='';ok('Mesa: não foi possível enviar a ficha')})},700)}
+/** Envia o resumo 700 ms depois da última alteração, só se mudou. Chamado pelo out(), que roda a cada mudança na ficha, e a cada minuto pelo mzTick(). */
+function mzPub(){clearTimeout(mzT);mzT=setTimeout(()=>{const z=mz();if(!z)return;const o=resumo(derive()),j=JSON.stringify(o),T={'.sv':'timestamp'};if(j==mzJ)return;mzJ=j;
+ fetch(mzU(z,'PATCH'),{method:'POST',body:JSON.stringify({t:T,[S.id]:{...o,ts:T}})}).then(r=>{if(!r.ok)throw 0}).catch(()=>{mzJ='';ok('Mesa: não foi possível enviar a ficha')})},700)}
+const ZON=15e4,ZTTL=18e6;
+let gcT=0;
+/** Limpeza: fichas desta mesa sem sinal há 5 h e, a cada 30 min, mesas inteiras paradas há 5 h, de qualquer grupo.
+ * O plano gratuito do Firebase não roda tarefas agendadas, então quem abre a ficha limpa. A margem de 15 min cobre relógio adiantado: a regra compara com o horário do servidor. */
+function mzGC(){if(!FB)return;const cut=Date.now()-ZTTL-9e5,z=mz(),del=p=>fetch(mzU(p,'DELETE'),{method:'POST'}).catch(()=>{});
+ if(z)for(const [i,v] of Object.entries(MZS))if(i!=S.id&&v&&+v.ts<cut)del(z+'/'+i);
+ if(Date.now()-gcT<18e5)return;gcT=Date.now();
+ fetch(FB.replace(/\/+$/,'')+'/mesas.json?orderBy=%22t%22&endAt='+cut).then(r=>r.ok?r.json():null).then(o=>Object.keys(o||{}).forEach(del)).catch(()=>{})}
+/** A cada minuto: sinal de vida (reenvia o resumo), atualiza quem ficou offline e limpa. */
+function mzTick(){if(mz()){mzJ='';mzPub();mzShow()}mzGC()}
+setInterval(mzTick,6e4);
 /** Aplica no cache o valor v no caminho p ("/id/g/0"), como pede o streaming do Firebase. null apaga.
  * Chaves __proto__, constructor e prototype são ignoradas: vêm de outros jogadores e poderiam alterar Object.prototype. */
 function setp(o,p,v){const k=p.split('/').filter(Boolean);if(k.some(x=>x=='__proto__'||x=='constructor'||x=='prototype'))return o;if(!k.length)return v&&typeof v=='object'?v:{};
@@ -992,10 +1008,10 @@ const mzShow=()=>{if(S&&tab=='z')$('#m').innerHTML=mesa()};
 async function mzOut(){const z=mz();if(!await ask(`Sair da mesa ${z}? A sua ficha deixa de aparecer para os outros.`,null,'Sair'))return;
  clearTimeout(mzT);fetch(mzU(z+'/'+S.id,'DELETE'),{method:'POST'}).catch(()=>{});delete MZ[S.id];mzSave();$('#op').close();render();ok('Você saiu da mesa '+z)}
 /** Aba Mesa: um bloco por jogador, sem a própria ficha. Tudo vem de outros navegadores, então tudo passa por esc(). */
-function mesa(){const z=mz(),hr=t=>Number.isFinite(+t)&&+t?' · às '+new Date(+t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
+function mesa(){const z=mz(),now=Date.now(),off=v=>!(now-v.ts<ZON),hr=t=>Number.isFinite(+t)&&+t?' · offline desde '+new Date(+t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):' · offline';
  const V=o=>Object.values(o&&typeof o=='object'?o:{}).filter(x=>x&&typeof x=='object');
- const L=Object.entries(MZS).filter(([i,v])=>i!=S.id&&v&&typeof v=='object').map(([,v])=>v).sort((a,b)=>String(a.no).localeCompare(String(b.no)));
- const blk=v=>`<section class=cd><h2>${esc(v.no)||'Sem nome'}<small>${esc(v.cl)} nível ${esc(v.lv)}${v.jo?' · '+esc(v.jo):''}${hr(v.ts)}</small></h2>
+ const L=Object.entries(MZS).filter(([i,v])=>i!=S.id&&v&&typeof v=='object'&&!(now-v.ts>ZTTL)).map(([,v])=>v).sort((a,b)=>String(a.no).localeCompare(String(b.no)));
+ const blk=v=>`<section class="cd${off(v)?' zo':''}"><h2>${esc(v.no)||'Sem nome'}<small>${esc(v.cl)} nível ${esc(v.lv)}${v.jo?' · '+esc(v.jo):''}${off(v)?hr(v.ts):''}</small></h2>
 <div class=zs><span>PV <b>${esc(v.pv)}</b></span><span>CA <b>${esc(v.ca)}</b></span><span>Desgaste <b>${esc(v.dg)}</b></span><span>Carga <b>${esc(v.we)}</b></span></div>
 <p class=note><b>${esc(v.pt)} c</b> carregados · ${esc(v.nx)}</p>
 ${V(v.g).map(g=>`<h3>${esc(g.n)}<small>${esc(g.l)}</small></h3>${V(g.it).map(x=>`<div class=zi><span>${esc(x.n)}</span><span>${esc(x.q)}</span></div>`).join('')||'<p class=em>Vazio.</p>'}`).join('')}</section>`;
@@ -1121,6 +1137,7 @@ const flush=()=>{if(dirty&&auto){clearTimeout(sid);save()}};
 addEventListener('pagehide',flush);document.addEventListener('visibilitychange',()=>document.hidden&&flush());
 addEventListener('beforeunload',e=>{if(dirty&&!auto)e.preventDefault()});
 addEventListener('popstate',route);
+mzGC();
 addEventListener('keydown',e=>{if(S&&(e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()=='z'&&!e.target.matches('input:not([type=checkbox]),textarea')&&!$('dialog[open]')){e.preventDefault();undo()}
  if(e.key=='Escape'&&!$('#mn').hidden&&!$('dialog[open]'))mn(0)});
 // outra aba salvou esta ficha: recarrega se aqui não há mudança pendente, senão pergunta
